@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="开始其实 Hexo 在官网已经非常清除的说明了安装过程…个鬼喔，踩了一堆坑，文章仅仅是笔记，碰到的问题有限，仅限参考。 因为目前常用的系统仍然是 Windows，所以还是使用 Windows 下的 Ubuntu 子系统，并且发布在 GitHub 上。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo + Github 搭建笔记">
+<meta property="og:url" content="http://example.com/2020/03/23/hexo%20+%20Github%20%E6%90%AD%E5%BB%BA%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="GeanRain Printer">
+<meta property="og:description" content="开始其实 Hexo 在官网已经非常清除的说明了安装过程…个鬼喔，踩了一堆坑，文章仅仅是笔记，碰到的问题有限，仅限参考。 因为目前常用的系统仍然是 Windows，所以还是使用 Windows 下的 Ubuntu 子系统，并且发布在 GitHub 上。">
+<meta property="og:locale">
+<meta property="og:image" content="https://ubuntucommunity.s3.dualstack.us-east-2.amazonaws.com/optimized/2X/a/a37a2d3052061a081eaeff1bc2135e9c4d8a301d_2_690x545.png">
+<meta property="og:image" content="https://ubuntucommunity.s3.dualstack.us-east-2.amazonaws.com/original/2X/6/60c28a6969c925c5c861d439d23cd3c3ecec7d21.png">
+<meta property="article:published_time" content="2020-03-23T11:00:48.000Z">
+<meta property="article:modified_time" content="2021-02-15T12:35:03.812Z">
+<meta property="article:author" content="GeanRain">
+<meta property="article:tag" content="hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ubuntucommunity.s3.dualstack.us-east-2.amazonaws.com/optimized/2X/a/a37a2d3052061a081eaeff1bc2135e9c4d8a301d_2_690x545.png">
+
+<link rel="canonical" href="http://example.com/2020/03/23/hexo%20+%20Github%20%E6%90%AD%E5%BB%BA%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>hexo + Github 搭建笔记 | GeanRain Printer</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">GeanRain Printer</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">各种对各种错的软硬件笔记</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/03/23/hexo%20+%20Github%20%E6%90%AD%E5%BB%BA%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="GeanRain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GeanRain Printer">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          hexo + Github 搭建笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-03-23 19:00:48" itemprop="dateCreated datePublished" datetime="2020-03-23T19:00:48+08:00">2020-03-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-02-15 20:35:03" itemprop="dateModified" datetime="2021-02-15T20:35:03+08:00">2021-02-15</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><p>其实 Hexo 在<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">官网</a>已经非常清除的说明了安装过程…个鬼喔，踩了一堆坑，文章仅仅是笔记，碰到的问题有限，仅限参考。</p>
+<p>因为目前常用的系统仍然是 Windows，所以还是使用 Windows 下的 Ubuntu 子系统，并且发布在 GitHub 上。</p>
+<a id="more"></a>
+
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="Ubuntu-子系统"><a href="#Ubuntu-子系统" class="headerlink" title="Ubuntu 子系统"></a>Ubuntu 子系统</h3><p>只要是 <a target="_blank" rel="noopener" href="https://support.microsoft.com/zh-hk/topic/windows-10-%E5%92%8C-windows-server-update-%E7%97%85%E5%8F%B2-8e779ac1-e840-d3b8-524e-91037bf7645a">2017/10 (1709)</a> 后发布的 Windows 10 版本都能安装 Ubuntu 子系统。可以 <code>win + r</code> 调出运行窗口，输入 <code>winver</code> 指令查看版本号</p>
+<h4 id="启动-WSL"><a href="#启动-WSL" class="headerlink" title="启动 WSL"></a>启动 WSL</h4><p>以管理员身份打开 PowerShell</p>
+<p>如果你的系统版本还没更新到 <a target="_blank" rel="noopener" href="https://support.microsoft.com/zh-hk/topic/windows-10-%E6%9B%B4%E6%96%B0%E8%A8%98%E9%8C%84-24ea91f4-36e7-d8fd-0ddb-d79d9d0cdbda">2004</a>，那使用 WSL 1</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dism.exe /online /<span class="built_in">enable-feature</span> /featurename:Microsoft<span class="literal">-Windows</span><span class="literal">-Subsystem</span><span class="literal">-Linux</span> /all /norestart</span><br></pre></td></tr></table></figure>
+<p>如果你的系统版本比 <a target="_blank" rel="noopener" href="https://support.microsoft.com/zh-hk/topic/windows-10-%E6%9B%B4%E6%96%B0%E8%A8%98%E9%8C%84-24ea91f4-36e7-d8fd-0ddb-d79d9d0cdbda">2004</a> 更加高，那使用 WSL 2</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dism.exe /online /<span class="built_in">enable-feature</span> /featurename:VirtualMachinePlatform /all /norestart</span><br></pre></td></tr></table></figure>
+<p>然后重启系统</p>
+<h4 id="安装-Ubuntu"><a href="#安装-Ubuntu" class="headerlink" title="安装 Ubuntu"></a>安装 Ubuntu</h4><p>重启后在 Microsoft Store 里搜索 Ubuntu</p>
+<p><img src="https://ubuntucommunity.s3.dualstack.us-east-2.amazonaws.com/optimized/2X/a/a37a2d3052061a081eaeff1bc2135e9c4d8a301d_2_690x545.png" alt="Ubuntu On Windows 官方图"></p>
+<p>安装后首次启动会执行安装，安装后输入用户名与密码</p>
+<p><img src="https://ubuntucommunity.s3.dualstack.us-east-2.amazonaws.com/original/2X/6/60c28a6969c925c5c861d439d23cd3c3ecec7d21.png" alt="Ubuntu On Windows 官方图"></p>
+<p>目前 Ubuntu 已安装完毕</p>
+<h3 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h3><p>先更新一下源</p>
+<p>由于系统初始化的源是官方源，国内访问相对来说比较慢，所以需要换成国内源。如果有办法加速官方源那可以跳过这一步。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vi /etc/apt/sources.list</span><br></pre></td></tr></table></figure>
+<p>更换的是清华的源，为了偷懒就不整个文件重写，直接替换域名字段。进入 vi 后直接在英文状态下敲打下面指令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:%s&#x2F;archive.ubuntu.com&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;g</span><br></pre></td></tr></table></figure>
+<p>然后输入下面指令保存退出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:wq</span><br></pre></td></tr></table></figure>
+<p>回到终端，执行命令更新源</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br></pre></td></tr></table></figure>
+<h4 id="安装-node-js"><a href="#安装-node-js" class="headerlink" title="安装 node.js"></a>安装 node.js</h4><p>有两个方法安装，两种方法配置出来的环境各有不同，<code>apt</code> 安装，使用 npm 可能存在权限问题，手动安装则不会。推荐手动安装。</p>
+<p><strong>使用 <code>apt</code> 直接安装</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install nodejs</span><br></pre></td></tr></table></figure>
+<p>当然这样安装版本可能会比较低，<a target="_blank" rel="noopener" href="https://github.com/nodesource/distributions/blob/master/README.md">官方</a>提供各种版本的安装方式，可以参考安装新版本。也可以使用 <code>nvm</code> 工具管理 node-js 版本。</p>
+<p><strong>手动安装</strong></p>
+<p>在官方下载页面找到对应系统的包，目前方案使用 Linux Binaries (X64) 版本的二进制包，复制下载链接后，在 Ubuntu 中访问你想存放 node-js 的目录，下载并解压。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://nodejs.org/dist/v14.15.5/node-v14.15.5-linux-x64.tar.xz</span><br><span class="line">tar -xvf node-v14.15.5-linux-x64.tar.xz</span><br></pre></td></tr></table></figure>
+<p>也可以通过源码编译后安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://nodejs.org/dist/v14.15.5/node-v14.15.5.tar.gz</span><br><span class="line">tar -zxvf node-v14.15.5.tar.gz</span><br></pre></td></tr></table></figure>
+<p>编译安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> node-v14.15.5</span><br><span class="line">./configure</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+<p>无论下载二进制包还是自己编译，都需要配置一下环境变量，注意这里修改的是用户的 profile。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi ~/.profile</span><br></pre></td></tr></table></figure>
+<p>在底部添加两行，把 <code>node-js</code> 和 <code>npm</code> 添加到环境变量中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># node-js</span><br><span class="line">export NODE_HOME&#x3D;解压时包所在根目录的绝对地址&#x2F;bin</span><br><span class="line">export PATH&#x3D;$NODE_HOME:$PATH</span><br></pre></td></tr></table></figure>
+<p>保存退出后激活修改</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.profile</span><br></pre></td></tr></table></figure>
+<p>然后验证一下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
+<p>到这里，hexo 的环境已搭建完成</p>
+<h3 id="安装-hexo"><a href="#安装-hexo" class="headerlink" title="安装 hexo"></a>安装 hexo</h3><p>一般安装 node-js 过程会把 npm 也安装上，使用 npm 安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+<p>安装成功后查看版本号</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo -v</span><br></pre></td></tr></table></figure>
+<p>如果想装最新版本，也推荐装最新版本，发现 hexo 的版本并不是最新的，可以使用工具升级。在 <code>hexo</code> 的目录下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">npm install -g npm-check</span><br><span class="line">npm-check</span><br><span class="line">npm install -g npm-upgrade</span><br><span class="line">npm-upgrade</span><br><span class="line">npm update -g</span><br><span class="line">npm update --save</span><br></pre></td></tr></table></figure>
+<p>安装更新后发现版本号仍然没更新，看到官方的 <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues/4572">Issues</a> 里一个老哥给的解决方式</p>
+<blockquote>
+<p>Run</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i hexo@5.2.0</span><br></pre></td></tr></table></figure>
+
+<p>The latest version of <code>hexo-cli</code> is 4.2.0 thus you don’t need to upgrade it globally</p>
+</blockquote>
+<p>安装后版本号到最新。</p>
+<p>到目前 hexo 已安装完毕。</p>
+<h2 id="建站"><a href="#建站" class="headerlink" title="建站"></a>建站</h2><h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>访问到需要存放博客的路径，这个地方是存放原始文章的地方。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 新建并初始化一个站点</span></span><br><span class="line">hexo init &lt;folder&gt;</span><br><span class="line"><span class="comment"># 安装站点</span></span><br><span class="line"><span class="built_in">cd</span> &lt;folder&gt;</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+<p>到这一步，站点布置已经完成，可以生成静态文件看看效果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g  <span class="comment"># 生成静态文件</span></span><br><span class="line">hexo s  <span class="comment"># 启动预览服务</span></span><br></pre></td></tr></table></figure>
+<p>能正常访问说明站点布置成功</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>编辑一下博客目录下 <code>_config.yml</code> 文件，具体可以查看官网介绍，这里就贴出比较重要的设置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Site</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">Hexo</span>  <span class="comment"># 网站主标题</span></span><br><span class="line"><span class="attr">subtitle:</span> <span class="string">&#x27;&#x27;</span>  <span class="comment"># 网站副标题</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">&#x27;&#x27;</span>  <span class="comment"># 网站描述</span></span><br><span class="line"><span class="attr">keywords:</span>  <span class="comment"># 网站关键词</span></span><br><span class="line"><span class="attr">author:</span> <span class="string">John</span> <span class="string">Doe</span>  <span class="comment"># 作者</span></span><br><span class="line"><span class="attr">language:</span> <span class="string">en</span>  <span class="comment"># 网站使用的语言，简体中文设置为 zh-Hans</span></span><br><span class="line"><span class="attr">timezone:</span> <span class="string">&#x27;&#x27;</span>  <span class="comment"># 时区，中国大陆可以设置为 Asia/Shanghai</span></span><br></pre></td></tr></table></figure>
+<h3 id="写文章"><a href="#写文章" class="headerlink" title="写文章"></a>写文章</h3><p>可以使用指令来新建一篇文章</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new [layout] &lt;title&gt;</span><br></pre></td></tr></table></figure>
+<p>这样新建文章，hexo 会在文件内初始化一些参数</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: foo</span><br><span class="line">date: 2021-02-15 19:28:03</span><br><span class="line">tags:</span><br><span class="line"><span class="bullet">	-</span> tags1</span><br><span class="line"><span class="bullet">	-</span> tags2</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+<p>这些参数能帮助索引文章等，其他参数可以参考官网。你也可以自行新建文件后添加。当你写完文章后，重新生成静态文件即可。</p>
+<h2 id="更新到-Github-上"><a href="#更新到-Github-上" class="headerlink" title="更新到 Github 上"></a>更新到 Github 上</h2><h3 id="建立-Github-Page"><a href="#建立-Github-Page" class="headerlink" title="建立 Github Page"></a>建立 Github Page</h3><p>创建账号后创建一个与账号同名的仓库，这样可以使用<code>&lt;你的 GitHub 用户名&gt;.github.io</code> ，注意一个账号只能创建一个静态站点</p>
+<h3 id="安装-git"><a href="#安装-git" class="headerlink" title="安装 git"></a>安装 git</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install git</span><br></pre></td></tr></table></figure>
+<p>配置本地用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;GitHub 的用户名&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;创建 GitHub 时的邮箱&quot;</span></span><br></pre></td></tr></table></figure>
+<p>生成 SSH key</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">&quot;创建 GitHub 时的邮箱&quot;</span></span><br></pre></td></tr></table></figure>
+<p>生成过程有三个让用户输入的自定义参数，如果没什么特殊要求直接留空回车</p>
+<p>创建完成后需要吧 public key 加入到 GitHub 账号中，输入下面指令可以获取刚刚生成的 public key</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
+<p>输出的内容全选复制，来到<a target="_blank" rel="noopener" href="https://github.com/settings/keys"> Github 账户设置</a>，找到 <code>SSH and GPG Keys</code> 一项，添加 <code>SSH Key</code>，把刚才复制的 public key 添加进 key 项，保存。到这一步，你使用系统的 <code>git</code> <strong>无密码</strong>推送更新。</p>
+<p>到这一步，可以根据官网的多个步骤把静态站点推到 Github 上。鬼才做那么多步骤，所以使用一键工具 <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo-deployer-git">hexo-deployer-git</a></p>
+<h3 id="安装-hexo-deployer-git-工具"><a href="#安装-hexo-deployer-git-工具" class="headerlink" title="安装 hexo-deployer-git 工具"></a>安装 hexo-deployer-git 工具</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+<p>对 <code>_config.yml</code> 进行配置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">https://github.com/&lt;username&gt;/&lt;project&gt;</span></span><br><span class="line">  <span class="comment"># example, https://github.com/hexojs/hexojs.github.io</span></span><br><span class="line">  <span class="comment"># 其实就是仓库的 clone 的链接</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+<p>然后一行代码部署</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+<h2 id="具体使用步骤"><a href="#具体使用步骤" class="headerlink" title="具体使用步骤"></a>具体使用步骤</h2><ol>
+<li><code>hexo new</code> 新建一个文章</li>
+<li>肝文章</li>
+<li><code>hexo g</code> 生成静态网站</li>
+<li><code>hexo s</code> 预览文章</li>
+<li>文章有问题，<code>goto 2</code></li>
+<li><code>hexo d</code> 将文章推送到 GitHub 上</li>
+</ol>
+<h1 id="各种自定义操作-不定时更新"><a href="#各种自定义操作-不定时更新" class="headerlink" title="各种自定义操作 (不定时更新)"></a>各种自定义操作 (不定时更新)</h1><h2 id="修改主题"><a href="#修改主题" class="headerlink" title="修改主题"></a>修改主题</h2><p>修改很简单，用 NexT 来作为例子</p>
+<h3 id="下载主题包"><a href="#下载主题包" class="headerlink" title="下载主题包"></a>下载主题包</h3><p>定位到 <code>you_site_folder/themes</code>，把包放到这个目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> you_site_folder/themes</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/iissnan/hexo-theme-next next</span><br></pre></td></tr></table></figure>
+<h3 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h3><p>编辑 <code>_config.yml</code> 文件，找到 <code>theme</code> 字段，修改值为包的文件夹名字</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">next</span></span><br></pre></td></tr></table></figure>
+<p>建议先清除掉原有的静态站点的文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br></pre></td></tr></table></figure>
+<p>然后重新生成预览网站</p>
+<h2 id="NexT：主页不显示全部文章"><a href="#NexT：主页不显示全部文章" class="headerlink" title="NexT：主页不显示全部文章"></a>NexT：主页不显示全部文章</h2><p>目前有三个方法</p>
+<ol>
+<li><p>文章中在自己喜欢的地方加入 <code>&lt;!-- more --&gt;</code>，手动截断。</p>
+</li>
+<li><p>在 <code>front-matter</code> 添加 <code>description</code>，提供摘录</p>
+</li>
+<li><p>让主题自己生成摘要，在主题根目录 <code>_config.yml</code> 文件种添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">auto_excerpt:</span><br><span class="line">  enable: true</span><br><span class="line">  length: 150  # 截断字符长度</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<p>推荐使用第一种方式</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hexo/" rel="tag"># hexo</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/23/marlin-2-0-X-%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3/" rel="prev" title="marlin_2.0.X_配置详解">
+      <i class="fa fa-chevron-left"></i> marlin_2.0.X_配置详解
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B"><span class="nav-number">1.</span> <span class="nav-text">开始</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu-%E5%AD%90%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.1.1.</span> <span class="nav-text">Ubuntu 子系统</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-WSL"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">启动 WSL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-Ubuntu"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">安装 Ubuntu</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83"><span class="nav-number">1.1.2.</span> <span class="nav-text">配置环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-node-js"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">安装 node.js</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo"><span class="nav-number">1.1.3.</span> <span class="nav-text">安装 hexo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%99"><span class="nav-number">1.2.</span> <span class="nav-text">建站</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.2.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E6%96%87%E7%AB%A0"><span class="nav-number">1.2.3.</span> <span class="nav-text">写文章</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E5%88%B0-Github-%E4%B8%8A"><span class="nav-number">1.3.</span> <span class="nav-text">更新到 Github 上</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B-Github-Page"><span class="nav-number">1.3.1.</span> <span class="nav-text">建立 Github Page</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-git"><span class="nav-number">1.3.2.</span> <span class="nav-text">安装 git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo-deployer-git-%E5%B7%A5%E5%85%B7"><span class="nav-number">1.3.3.</span> <span class="nav-text">安装 hexo-deployer-git 工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E4%BD%BF%E7%94%A8%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.4.</span> <span class="nav-text">具体使用步骤</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%84%E7%A7%8D%E8%87%AA%E5%AE%9A%E4%B9%89%E6%93%8D%E4%BD%9C-%E4%B8%8D%E5%AE%9A%E6%97%B6%E6%9B%B4%E6%96%B0"><span class="nav-number">2.</span> <span class="nav-text">各种自定义操作 (不定时更新)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BB%E9%A2%98"><span class="nav-number">2.1.</span> <span class="nav-text">修改主题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E4%B8%BB%E9%A2%98%E5%8C%85"><span class="nav-number">2.1.1.</span> <span class="nav-text">下载主题包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-1"><span class="nav-number">2.1.2.</span> <span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NexT%EF%BC%9A%E4%B8%BB%E9%A1%B5%E4%B8%8D%E6%98%BE%E7%A4%BA%E5%85%A8%E9%83%A8%E6%96%87%E7%AB%A0"><span class="nav-number">2.2.</span> <span class="nav-text">NexT：主页不显示全部文章</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="GeanRain"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">GeanRain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">GeanRain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

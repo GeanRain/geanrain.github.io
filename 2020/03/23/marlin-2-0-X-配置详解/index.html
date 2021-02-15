@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="开始的开始基于对应机型的配置文件，结合官方文档食用。如果出现翻译错误，官方文档为主，我才不负责人:)，然而官方文档也是写得挺乱的 文件配置的内容非常多，新手可能会遇到不知道哪些功能需要启用，不建议全部看完。而文中的一些参考视频都需要科学上网">
+<meta property="og:type" content="article">
+<meta property="og:title" content="marlin_2.0.X_配置详解">
+<meta property="og:url" content="http://example.com/2020/03/23/marlin-2-0-X-%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="GeanRain Printer">
+<meta property="og:description" content="开始的开始基于对应机型的配置文件，结合官方文档食用。如果出现翻译错误，官方文档为主，我才不负责人:)，然而官方文档也是写得挺乱的 文件配置的内容非常多，新手可能会遇到不知道哪些功能需要启用，不建议全部看完。而文中的一些参考视频都需要科学上网">
+<meta property="og:locale">
+<meta property="og:image" content="http://forums.reprap.org/file.php?245,file=44007">
+<meta property="og:image" content="https://marlinfw.org/assets/images/config/filament-sensor.jpg">
+<meta property="og:image" content="https://marlinfw.org/assets/images/config/controllers.png">
+<meta property="article:published_time" content="2020-03-23T11:00:48.000Z">
+<meta property="article:modified_time" content="2021-02-15T12:30:24.328Z">
+<meta property="article:author" content="GeanRain">
+<meta property="article:tag" content="3D打印">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://forums.reprap.org/file.php?245,file=44007">
+
+<link rel="canonical" href="http://example.com/2020/03/23/marlin-2-0-X-%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>marlin_2.0.X_配置详解 | GeanRain Printer</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">GeanRain Printer</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">各种对各种错的软硬件笔记</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/03/23/marlin-2-0-X-%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="GeanRain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GeanRain Printer">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          marlin_2.0.X_配置详解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-03-23 19:00:48" itemprop="dateCreated datePublished" datetime="2020-03-23T19:00:48+08:00">2020-03-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-02-15 20:30:24" itemprop="dateModified" datetime="2021-02-15T20:30:24+08:00">2021-02-15</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="开始的开始"><a href="#开始的开始" class="headerlink" title="开始的开始"></a>开始的开始</h1><p>基于对应机型的配置文件，结合官方文档食用。如果出现翻译错误，<a target="_blank" rel="noopener" href="https://marlinfw.org/docs/configuration/configuration.html">官方文档</a>为主，我才不负责人:)，然而官方文档也是写得挺乱的</p>
+<p>文件配置的内容非常多，新手可能会遇到不知道哪些功能需要启用，不建议全部看完。而文中的一些参考视频都需要科学上网</p>
+<a id="more"></a>
+
+<p>开始前你需要知道的一些事情，这些事情在配置过程中并不会都排上用场，但知道有助于你配置并优化打印机</p>
+<ul>
+<li>框架结构类<ul>
+<li>各个机械配件的详细信息，比如同步轮的直径、丝杆的螺距、并联臂两孔中心距</li>
+<li>机器的架构，在<code>config/examples</code>选择对应机器架构的配置文件，这样会节省大量时间，如果目录没有就<a target="_blank" rel="noopener" href="https://github.com/MarlinFirmware/Configurations/archive/release-2.0.4.zip">下载</a></li>
+<li>挤出机数量和挤出方式</li>
+<li>End Stop 的位置 (XYZ轴电机的起点或终点)</li>
+</ul>
+</li>
+<li>电子电路类<ul>
+<li>驱动打印机的控制板型号，比如 RAMPS</li>
+<li>步进电机驱动器详细信息，比如驱动电流，最小微步</li>
+<li>步进电机的详细参数，比如步距角、最大电流</li>
+<li>热敏电阻型号 (探测热端/热床的温度)</li>
+<li>液晶显示屏的型号</li>
+<li>探针信息</li>
+</ul>
+</li>
+</ul>
+<p>配置文件有两个</p>
+<p><code>Configuration.h</code> 包含硬件核心、语言和控制器的设置，以及最常见的功能和组件的设置，主要配置的地方。</p>
+<p><code>Configuration_adv.h</code> 提供更详细的自定义选项，附加组件，实验功能和其他功能。</p>
+<p>以下配置以 kossel(delta) + Arduino Mega2560 + Ramps 1.4 作为示例</p>
+<h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><p>[TOC]</p>
+<h1 id="Configuration-文件"><a href="#Configuration-文件" class="headerlink" title="Configuration 文件"></a>Configuration 文件</h1><h2 id="版本控制"><a href="#版本控制" class="headerlink" title="版本控制"></a>版本控制</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define CONFIGURATION_H_VERSION 020004</span><br></pre></td></tr></table></figure>
+<h2 id="固件基本信息"><a href="#固件基本信息" class="headerlink" title="固件基本信息"></a>固件基本信息</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#define STRING_CONFIG_H_AUTHOR &quot;(none, default config)&quot;</span><br><span class="line">#define SHOW_BOOTSCREEN</span><br><span class="line">#define SHOW_CUSTOM_BOOTSCREEN</span><br><span class="line">#define CUSTOM_STATUS_SCREEN_IMAGE</span><br></pre></td></tr></table></figure>
+<ul>
+<li>作者和固件的信息，这些信息会在 Marlin 启动时、连接终端、重启和执行 M115 时显示，可以用于区分不同配置文件的版本</li>
+<li>定义它可以在打印机启动时，开机画面会显示在 LCD 上</li>
+<li>定义它可以使用自定义的启动画面，编译时会自动寻找<code>Marlin/_Bootscreen.h</code>位图文件</li>
+<li>定义它可以使用自定义的状态画面，编译时会自动寻找<code>Marlin/_Statusscreen.h</code>位图文件</li>
+</ul>
+<h2 id="硬件基本信息"><a href="#硬件基本信息" class="headerlink" title="硬件基本信息"></a>硬件基本信息</h2><h3 id="串行端口"><a href="#串行端口" class="headerlink" title="串行端口"></a>串行端口</h3><p>串行端口的配置选项，暂时不知道怎样使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define SERIAL_PORT 0</span><br><span class="line">#define SERIAL_PORT_2 -1</span><br></pre></td></tr></table></figure>
+<h3 id="波特率与蓝牙"><a href="#波特率与蓝牙" class="headerlink" title="波特率与蓝牙"></a>波特率与蓝牙</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define BAUDRATE 115200</span><br><span class="line">#define BLUETOOTH</span><br></pre></td></tr></table></figure>
+<ul>
+<li>波特率设置，使用电脑或其他终端连接时需要用到</li>
+<li>启动蓝牙功能，比如说基于 AT90USB</li>
+</ul>
+<h3 id="控制板"><a href="#控制板" class="headerlink" title="控制板"></a>控制板</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define MOTHERBOARD BOARD_RAMPS_14_EFB</span><br></pre></td></tr></table></figure>
+<p>这是最重要的设置，Marlin 需要知道它运行在什么控制板上，这个设置会影响功能分配到那个引脚上，错误配置将导致不可预测的后果。</p>
+<p>在<code>Marlin\src\core\boards.h</code>找到你控制板的型号，用它的 ID 替换实例代码里的<code>BOARD_RAMPS_14_EFB</code>(define 的名字也行)。你可能发现你的开发板型号有好几个 ID，你可以参考</p>
+<p>代码后面跟着的注释去选择正确的 ID。 例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#define BOARD_RAMPS_14_EFB 1020  &#x2F;&#x2F; RAMPS 1.4 (Power outputs: Hotend, Fan, Bed)</span><br><span class="line">#define BOARD_RAMPS_14_EEB 1021  &#x2F;&#x2F; RAMPS 1.4 (Power outputs: Hotend0, Hotend1, Bed)</span><br><span class="line">#define BOARD_RAMPS_14_EFF 1022  &#x2F;&#x2F; RAMPS 1.4 (Power outputs: Hotend, Fan0, Fan1)</span><br><span class="line">#define BOARD_RAMPS_14_EEF 1023  &#x2F;&#x2F; RAMPS 1.4 (Power outputs: Hotend0, Hotend1, Fan)</span><br><span class="line">#define BOARD_RAMPS_14_SF  1024  &#x2F;&#x2F; RAMPS 1.4 (Power outputs: Spindle, Controller Fan)</span><br></pre></td></tr></table></figure>
+<p>这个是 RAMPS 1.4 相关的 ID 号，可以看到后面注释把不同的功能分配到 Power out 上，比如说 1020 的功能有一个挤出头，一把吹件风扇，一个热床，而 1021 是有两个挤出头，一个热床，没有吹件风扇。</p>
+<h3 id="打印机命名"><a href="#打印机命名" class="headerlink" title="打印机命名"></a>打印机命名</h3><p>定义打印机的名称，名称将会出现在 LCD 屏幕上和 <code>M115</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define CUSTOM_MACHINE_NAME &quot;3D Printer&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="打印机-UUID"><a href="#打印机-UUID" class="headerlink" title="打印机 UUID"></a>打印机 UUID</h3><p>设置 UUID，有些软件可以用 UUID 区分不同的打印机，你可以通过 <a target="_blank" rel="noopener" href="https://www.uuidtools.com/generate/v4">UUIDTools</a> 获取随机生成的 UUID</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define MACHINE_UUID &quot;00000000-0000-0000-0000-000000000000&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="挤出基本信息"><a href="#挤出基本信息" class="headerlink" title="挤出基本信息"></a>挤出基本信息</h2><h3 id="挤出机数量"><a href="#挤出机数量" class="headerlink" title="挤出机数量"></a>挤出机数量</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define EXTRUDERS 1</span><br></pre></td></tr></table></figure>
+<p>这里可以定义 0 - 6 个挤出机 (官方网站是 0 - 6 个，配置文件的注释是 1 - 8 个，哪个新用哪个，并且这里算的不是喷头数量)，如果不是单喷头单挤出机的情况，将在下面详细定义，但这里也需要设置挤出机的数量</p>
+<h3 id="细丝直径"><a href="#细丝直径" class="headerlink" title="细丝直径"></a>细丝直径</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define DEFAULT_NOMINAL_FILAMENT_DIA 1.75</span><br></pre></td></tr></table></figure>
+<p>这里定义的直径是耗材上标注的直径，如果它标注 1.75，但实际测量是 1.70，这里也填 1.75</p>
+<blockquote>
+<p>This value is used by Marlin to compensate for Filament Width when printing in volumetric mode (See M200), and by the Unified Bed Leveling command G26 when printing a test grid.</p>
+</blockquote>
+<p>(参考机翻) 当打印机在容积模式 (详见 <code>M200</code>) 和使用统一床平整命令 (G26) 打印测试网格时，Marlin 会使用这个值补偿细丝宽度，你可以使用<code>M404 W</code>修改此值</p>
+<p>你可以使用 <code>M404 W</code>修改此值</p>
+<h3 id="多路材料挤出"><a href="#多路材料挤出" class="headerlink" title="多路材料挤出"></a>多路材料挤出</h3><p>如果你的机器是支持多路耗材挤出的，这里有相关的配置，如果你只有单喷头单挤出，你可以直接跳过这段配置</p>
+<h4 id="单喷头多挤出"><a href="#单喷头多挤出" class="headerlink" title="单喷头多挤出"></a>单喷头多挤出</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define SINGLENOZZLE</span><br></pre></td></tr></table></figure>
+<p>如果你是使用 E3D Cyclops 或其他类似的多路材料喷头复用套件 (<a target="_blank" rel="noopener" href="https://youtu.be/KpcH74DXyy0">科普连接</a>)，你需要启用这个选项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#define MK2_MULTIPLEXER</span><br><span class="line">#if ENABLED(MK2_MULTIPLEXER)</span><br><span class="line">  &#x2F;&#x2F;#define E_MUX0_PIN 40  &#x2F;&#x2F; Always Required</span><br><span class="line">  &#x2F;&#x2F;#define E_MUX1_PIN 42  &#x2F;&#x2F; Needed for 3 to 8 inputs</span><br><span class="line">  &#x2F;&#x2F;#define E_MUX2_PIN 44  &#x2F;&#x2F; Needed for 5 to 8 inputs</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>有些控制板支持一个步进电机驱动器驱动 2 - 8 个步进电机，支持多路挤出，你可以启用<code>MK2_MULTIPLEXER</code>，并配置<code>E_MUX0_PIN</code>、<code>E_MUX1_PIN</code>、<code>E_MUX2_PIN</code>，这些配置会覆盖默认的 DIO 选择器的引脚设置。有些机型的配置文件可能已经配置好相关的引脚</p>
+<h4 id="Prusa-MMU2-挤出装置"><a href="#Prusa-MMU2-挤出装置" class="headerlink" title="Prusa MMU2 挤出装置"></a>Prusa MMU2 挤出装置</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define PRUSA_MMU2</span><br></pre></td></tr></table></figure>
+<p>Prusa MMU2 的挤出套件 (<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=E1ZxTCApLrs">科普连接</a>)，前提你的控制板有一个空闲的串口，你还需要设置一些东西：</p>
+<ul>
+<li>启用 <a target="_blank" rel="noopener" href="https://marlinfw.org/docs/configuration/configuration.html#nozzle-park">NOZZLE_PARK_FEATURE</a></li>
+<li>设置 <a target="_blank" rel="noopener" href="https://marlinfw.org/docs/configuration/configuration.html#extruders">EXTRUDERS</a> = 5</li>
+</ul>
+<p>详细设置可以在<code>Configuration_adv.h</code>找到</p>
+<h4 id="单喷头单挤出机"><a href="#单喷头单挤出机" class="headerlink" title="单喷头单挤出机"></a>单喷头单挤出机</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#define SWITCHING_EXTRUDER</span><br><span class="line">#if ENABLED(SWITCHING_EXTRUDER)</span><br><span class="line">  #define SWITCHING_EXTRUDER_SERVO_NR 0</span><br><span class="line">  #define SWITCHING_EXTRUDER_SERVO_ANGLES &#123; 0, 90 &#125; &#x2F;&#x2F; Angles for E0, E1[, E2, E3]</span><br><span class="line">  #if EXTRUDERS &gt; 3</span><br><span class="line">    #define SWITCHING_EXTRUDER_E23_SERVO_NR 1</span><br><span class="line">  #endif</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>如果你使用的是单喷头单挤出机套件 (<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=STZg94co8CI">参考装置</a>)，你需要配置在这里配置套件相关的参数</p>
+<h4 id="双喷头双挤出电机切换装置"><a href="#双喷头双挤出电机切换装置" class="headerlink" title="双喷头双挤出电机切换装置"></a>双喷头双挤出电机切换装置</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#define SWITCHING_NOZZLE</span><br><span class="line">#if ENABLED(SWITCHING_NOZZLE)</span><br><span class="line">  #define SWITCHING_NOZZLE_SERVO_NR 0</span><br><span class="line">  &#x2F;&#x2F;#define SWITCHING_NOZZLE_E1_SERVO_NR 1          &#x2F;&#x2F; If two servos are used, the index of the second</span><br><span class="line">  #define SWITCHING_NOZZLE_SERVO_ANGLES &#123; 0, 90 &#125;   &#x2F;&#x2F; Angles for E0, E1 (single servo) or lowered&#x2F;raised (dual servo)</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>如果你使用两套独立挤出套件并可以使用电机切换 (<a target="_blank" rel="noopener" href="https://youtu.be/9F2uaDW0W4c">参考装置 0:05-0:12</a>)，你需要在这里依照实际情况配置相关参数</p>
+<h4 id="X轴独立支架喷头选择装置"><a href="#X轴独立支架喷头选择装置" class="headerlink" title="X轴独立支架喷头选择装置"></a>X轴独立支架喷头选择装置</h4><p>如果你的喷头都不是直接被 X 轴电机所驱动，而是通过独立支架连接喷头间接驱动 (<a target="_blank" rel="noopener" href="https://youtu.be/9VlvsebqdhU">参考装置</a>)，你需要启用这个功能，下面是三个不同的连接方式，根据实际情况选择一个即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define PARKING_EXTRUDER</span><br><span class="line">#define MAGNETIC_PARKING_EXTRUDER</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用电磁的启用<code>PARKING_EXTRUDER</code></li>
+<li>使用磁铁的启用<code>MAGNETIC_PARKING_EXTRUDER</code></li>
+</ul>
+<p>，而独立支架使用电磁连接不同喷头 ，你需要启用这个功能，并且需要配置<code>SOL1_PIN</code>和<code>SOL2_PIN</code></p>
+<h4 id="喷头对接交换装置"><a href="#喷头对接交换装置" class="headerlink" title="喷头对接交换装置"></a>喷头对接交换装置</h4><p>如果你是 E3D Tool Changer 或者类似的喷头切换方案 (<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=fRo3FUWs4Sg">科普视频</a>)，你需要启用这个功能，下面是三个不同的对接方式，根据实际情况选择一个即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#define SWITCHING_TOOLHEAD</span><br><span class="line">#define MAGNETIC_SWITCHING_TOOLHEAD</span><br><span class="line">#define ELECTROMAGNETIC_SWITCHING_TOOLHEAD</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用伺服器 (科普视频就是使用伺服器的连接方式) 的启用<code>SWITCHING_TOOLHEAD</code></li>
+<li>使用磁铁的启用<code>MAGNETIC_SWITCHING_TOOLHEAD</code></li>
+<li>使用电磁的启用 (<a target="_blank" rel="noopener" href="https://youtu.be/JolbsAKTKf4">科普视频</a>)<code>Electromagnetic</code></li>
+</ul>
+<p>详细配置如下，根据实际情况配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">#if ANY(SWITCHING_TOOLHEAD, MAGNETIC_SWITCHING_TOOLHEAD, ELECTROMAGNETIC_SWITCHING_TOOLHEAD)</span><br><span class="line">  #define SWITCHING_TOOLHEAD_Y_POS          235         &#x2F;&#x2F; (mm) Y position of the toolhead dock</span><br><span class="line">  #define SWITCHING_TOOLHEAD_Y_SECURITY      10         &#x2F;&#x2F; (mm) Security distance Y axis</span><br><span class="line">  #define SWITCHING_TOOLHEAD_Y_CLEAR         60         &#x2F;&#x2F; (mm) Minimum distance from dock for unobstructed X axis</span><br><span class="line">  #define SWITCHING_TOOLHEAD_X_POS          &#123; 215, 0 &#125;  &#x2F;&#x2F; (mm) X positions for parking the extruders</span><br><span class="line">  #if ENABLED(SWITCHING_TOOLHEAD)</span><br><span class="line">    #define SWITCHING_TOOLHEAD_SERVO_NR       2         &#x2F;&#x2F; Index of the servo connector</span><br><span class="line">    #define SWITCHING_TOOLHEAD_SERVO_ANGLES &#123; 0, 180 &#125;  &#x2F;&#x2F; (degrees) Angles for Lock, Unlock</span><br><span class="line">  #elif ENABLED(MAGNETIC_SWITCHING_TOOLHEAD)</span><br><span class="line">    #define SWITCHING_TOOLHEAD_Y_RELEASE      5         &#x2F;&#x2F; (mm) Security distance Y axis</span><br><span class="line">    #define SWITCHING_TOOLHEAD_X_SECURITY   &#123; 90, 150 &#125; &#x2F;&#x2F; (mm) Security distance X axis (T0,T1)</span><br><span class="line">    &#x2F;&#x2F;#define PRIME_BEFORE_REMOVE                       &#x2F;&#x2F; Prime the nozzle before release from the dock</span><br><span class="line">    #if ENABLED(PRIME_BEFORE_REMOVE)</span><br><span class="line">      #define SWITCHING_TOOLHEAD_PRIME_MM           20  &#x2F;&#x2F; (mm)   Extruder prime length</span><br><span class="line">      #define SWITCHING_TOOLHEAD_RETRACT_MM         10  &#x2F;&#x2F; (mm)   Retract after priming length</span><br><span class="line">      #define SWITCHING_TOOLHEAD_PRIME_FEEDRATE    300  &#x2F;&#x2F; (mm&#x2F;m) Extruder prime feedrate</span><br><span class="line">      #define SWITCHING_TOOLHEAD_RETRACT_FEEDRATE 2400  &#x2F;&#x2F; (mm&#x2F;m) Extruder retract feedrate</span><br><span class="line">    #endif</span><br><span class="line">  #elif ENABLED(ELECTROMAGNETIC_SWITCHING_TOOLHEAD)</span><br><span class="line">    #define SWITCHING_TOOLHEAD_Z_HOP          2         &#x2F;&#x2F; (mm) Z raise for switching</span><br><span class="line">  #endif</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<h4 id="单喷头混合挤出"><a href="#单喷头混合挤出" class="headerlink" title="单喷头混合挤出"></a>单喷头混合挤出</h4><p>使用两个或以上的挤出机将耗材同时驱动到混合仓，然后从单个喷头挤出混合丝，你需要配置这块代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#define MIXING_EXTRUDER</span><br><span class="line">#if ENABLED(MIXING_EXTRUDER)</span><br><span class="line">  #define MIXING_STEPPERS 2        &#x2F;&#x2F; Number of steppers in your mixing extruder</span><br><span class="line">  #define MIXING_VIRTUAL_TOOLS 16  &#x2F;&#x2F; Use the Virtual Tool method with [&#96;M163&#96;](&#x2F;docs&#x2F;gcode&#x2F;M163.html) and [&#96;M164&#96;](&#x2F;docs&#x2F;gcode&#x2F;M164.html)</span><br><span class="line">  &#x2F;&#x2F;#define DIRECT_MIXING_IN_G1    &#x2F;&#x2F; Allow ABCDHI mix factors in [&#96;G1&#96;](&#x2F;docs&#x2F;gcode&#x2F;G000-G001.html) movement commands</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>这个选项会增加使用 T 指令设置 (M163)、保存 (M164) 和读取 (M165) 混合物的功能</p>
+<blockquote>
+<p>The extruder still uses a single E axis, while the current mixture is used to determine the proportion of each filament to use. An “experimental” <a target="_blank" rel="noopener" href="https://marlinfw.org/docs/gcode/G000-G001.html"><code>G1</code></a> direct mixing option is included.</p>
+</blockquote>
+<p>(机翻参考) 挤出机仍使用单个 E 轴，而当前混合物用于确定要使用的每根长丝的比例。包含“实验性” G1直接混合选项。</p>
+<h3 id="喷头偏移"><a href="#喷头偏移" class="headerlink" title="喷头偏移"></a>喷头偏移</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define HOTEND_OFFSET_X &#123; 0.0, 20.00 &#125; &#x2F;&#x2F; (mm) relative X-offset for each nozzle</span><br><span class="line">&#x2F;&#x2F;#define HOTEND_OFFSET_Y &#123; 0.0, 5.00 &#125;  &#x2F;&#x2F; (mm) relative Y-offset for each nozzle</span><br><span class="line">&#x2F;&#x2F;#define HOTEND_OFFSET_Z &#123; 0.0, 0.00 &#125;  &#x2F;&#x2F; (mm) relative Z-offset for each nozzle</span><br></pre></td></tr></table></figure>
+<p>如果你有两个或以上的喷头，你需要配置这部分代码，值表示第 N - 1 个喷头与第一个喷头 (0, 0, 0) 的偏移值，有多少个就写多少个</p>
+<h2 id="电源设定"><a href="#电源设定" class="headerlink" title="电源设定"></a>电源设定</h2><p>如果你使用双电源，例如加热器独立一个电源，为了省电有时候会关闭电源，你需要配置这块代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#define PSU_CONTROL</span><br><span class="line">#define PSU_NAME &quot;Power Supply&quot;</span><br><span class="line"></span><br><span class="line">#if ENABLED(PSU_CONTROL)</span><br><span class="line">  #define PSU_ACTIVE_HIGH false &#x2F;&#x2F; Set &#39;false&#39; for ATX (1), &#39;true&#39; for X-Box (2)</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F;#define PS_DEFAULT_OFF      &#x2F;&#x2F; Keep power off until enabled directly with M80</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F;#define AUTO_POWER_CONTROL  &#x2F;&#x2F; Enable automatic control of the PS_ON pin</span><br><span class="line">  #if ENABLED(AUTO_POWER_CONTROL)</span><br><span class="line">    #define AUTO_POWER_FANS           &#x2F;&#x2F; Turn on PSU if fans need power</span><br><span class="line">    #define AUTO_POWER_E_FANS</span><br><span class="line">    #define AUTO_POWER_CONTROLLERFAN</span><br><span class="line">    #define AUTO_POWER_CHAMBER_FAN</span><br><span class="line">    &#x2F;&#x2F;#define AUTO_POWER_E_TEMP        50 &#x2F;&#x2F; (°C) Turn on PSU over this temperature</span><br><span class="line">    &#x2F;&#x2F;#define AUTO_POWER_CHAMBER_TEMP  30 &#x2F;&#x2F; (°C) Turn on PSU over this temperature</span><br><span class="line">    #define POWER_TIMEOUT 30</span><br><span class="line">  #endif</span><br><span class="line">#endif</span><br><span class="line">PS_DEFAULT_OFF&#96;允许控制板使用&#96;M80&#96;和&#96;M81&#96;打开和关闭电源 12v。需要配置&#96;PS_ON_PIN</span><br></pre></td></tr></table></figure>
+<h2 id="温度控制设定"><a href="#温度控制设定" class="headerlink" title="温度控制设定"></a>温度控制设定</h2><h3 id="温度传感器类型"><a href="#温度传感器类型" class="headerlink" title="温度传感器类型"></a>温度传感器类型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#define TEMP_SENSOR_0 1</span><br><span class="line">#define TEMP_SENSOR_1 0</span><br><span class="line">#define TEMP_SENSOR_2 0</span><br><span class="line">#define TEMP_SENSOR_3 0</span><br><span class="line">#define TEMP_SENSOR_4 0</span><br><span class="line">#define TEMP_SENSOR_5 0</span><br><span class="line">#define TEMP_SENSOR_BED 0</span><br><span class="line">#define TEMP_SENSOR_CHAMBER 0</span><br></pre></td></tr></table></figure>
+<p>温度传感器是 3D 打印机的重要部分，选择正确的温度传感器型号能让机器更加精准的控制温度</p>
+<p>在<code>Configuration.h</code>中，这部分选项的上方有型号对照表，这里需要根据你的温度传感器的型号选择正确的参数并填入，如果你找不到匹配的参数，你就选择同品牌相近的，或者使用<code>100k thermistor - best choice for EPCOS 100k (4.7k pullup)</code>，也就是 <code>1</code> ，但是准度就不确定了。<code>0</code>表示未使用</p>
+<p>淘宝购买的 NTC/3950/100K 大部分都可以选择<code>1</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Dummy thermistor constant temperature readings, for use with 998 and 999</span><br><span class="line">#define DUMMY_THERMISTOR_998_VALUE 25</span><br><span class="line">#define DUMMY_THERMISTOR_999_VALUE 100</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Marlin provides two dummy sensors for testing purposes. Set their constant temperature readings here.</p>
+</blockquote>
+<p>(机翻参考) 固件本身提供两个指令用于测试温度虚拟传感器，在这里设置恒定温度、</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define TEMP_SENSOR_1_AS_REDUNDANT</span><br><span class="line">#define MAX_REDUNDANT_TEMP_SENSOR_DIFF 10</span><br></pre></td></tr></table></figure>
+<p>启用这个选项可以把 传感器1 用作 传感器2 的冗余传感器，这样可以防止传感器出现故障，如果两个传感器的温差超过<code>MAX_REDUNDANT_TEMP_SENSOR_DIFF</code>所设定的数值，机器将会中断打印并停止加热</p>
+<h3 id="温度稳定设定"><a href="#温度稳定设定" class="headerlink" title="温度稳定设定"></a>温度稳定设定</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#define TEMP_RESIDENCY_TIME 10  &#x2F;&#x2F; (seconds)</span><br><span class="line">#define TEMP_HYSTERESIS 3       &#x2F;&#x2F; (degC) range of +&#x2F;- temperatures considered &quot;close&quot; to the target one</span><br><span class="line">#define TEMP_WINDOW 1           &#x2F;&#x2F; (degC) Window around target to start the residency timer x degC early.</span><br></pre></td></tr></table></figure>
+<p>这是配置热端稳定温度的条件</p>
+<ul>
+<li>在未加热完成的情况下，挤出机开始工作将有可能损坏装置，等待温度稳定<code>TEMP_RESIDENCY_TIME</code>所设定的时间 (秒)，加热成功指令 (M109) 后，挤出机才能开始工作</li>
+<li><code>TEMP_HYSTERESIS</code>指稳定期间能接受温度的浮动幅度，单位是摄氏度</li>
+<li><code>TEMP_WINDOW</code>貌似是设定进入窗口开始计时的条件，具体看注释</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#define TEMP_BED_RESIDENCY_TIME 10  &#x2F;&#x2F; (seconds)</span><br><span class="line">#define TEMP_BED_HYSTERESIS 3       &#x2F;&#x2F; (degC) range of +&#x2F;- temperatures considered &quot;close&quot; to the target one</span><br><span class="line">#define TEMP_BED_WINDOW 1           &#x2F;&#x2F; (degC) Window around target to start the residency timer x degC early.</span><br></pre></td></tr></table></figure>
+<p>这是热床配置，同上</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define TEMP_CHAMBER_HYSTERESIS  3  &#x2F;&#x2F; (°C) Temperature proximity considered &quot;close enough&quot; to the target</span><br></pre></td></tr></table></figure>
+<p>设置温度可以距目标多少，仍然可以认为通过</p>
+<h3 id="温度范围"><a href="#温度范围" class="headerlink" title="温度范围"></a>温度范围</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#define HEATER_0_MINTEMP 5</span><br><span class="line">#define HEATER_1_MINTEMP 5</span><br><span class="line">#define HEATER_2_MINTEMP 5</span><br><span class="line">#define HEATER_3_MINTEMP 5</span><br><span class="line">#define HEATER_4_MINTEMP 5</span><br><span class="line">#define BED_MINTEMP 5</span><br></pre></td></tr></table></figure>
+<p>这里设置温度传感器的最低温度。这些参数有助于防止温度传感器出现故障而导致打印机过热和着火。</p>
+<p>如果任何一个温度传感器的温度低于设定的最低温度或者出现断路，打印机将会被关闭并显示<code>MINTEMP</code>错误</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#define HEATER_0_MAXTEMP 285</span><br><span class="line">#define HEATER_1_MAXTEMP 275</span><br><span class="line">#define HEATER_2_MAXTEMP 275</span><br><span class="line">#define HEATER_3_MAXTEMP 275</span><br><span class="line">#define HEATER_4_MAXTEMP 275</span><br><span class="line">#define BED_MAXTEMP 130</span><br></pre></td></tr></table></figure>
+<p>这里设置温度传感器的最高温度。如果实际温度高于这些值，出于安全原因，打印机将立即关闭。对于<code>E3D V6</code>热端，可以使用<code>285</code>作为最大值。</p>
+<p>如果任何一个温度传感器的温度高于设定的最高温度或者出现短路，打印机将会被关闭并显示<code>MAXTEMP</code>错误</p>
+<h3 id="PID"><a href="#PID" class="headerlink" title="PID"></a>PID</h3><p>温度控制使用 PID (Proportional, Integral, Derivative) 方式 (<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/PID%E6%8E%A7%E5%88%B6%E5%99%A8">Wikipedia</a>)，正确精准的 PID 值能稳定的控制温度，减少浮动，而且能防止加热阶段温度上升过快而损坏热端。</p>
+<p>使用 <code>M303</code> 指令会自动测试，并返回正确的PID参数，具体参考<a target="_blank" rel="noopener" href="https://reprap.org/wiki/PID_Tuning">RepRap</a>。每次更新/更换电路相关的元件时都推荐调整 PID 值。热端的 PID 可以使用<code>M301</code>或<code>LDC</code>设置，热床的 PID 可以使用<code>M304</code>设置</p>
+<h4 id="热端"><a href="#热端" class="headerlink" title="热端"></a>热端</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#define PIDTEMP</span><br><span class="line">#define BANG_MAX 255     &#x2F;&#x2F; limits current to nozzle while in bang-bang mode; 255&#x3D;full current</span><br><span class="line">#define PID_MAX BANG_MAX &#x2F;&#x2F; limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255&#x3D;full current</span><br><span class="line">#define K1 0.95</span><br></pre></td></tr></table></figure>
+<p>启用<code>PIDTEMP</code>使热端使用 PID 进行温度控制，而禁用会使热端进入 bang-bang 模式 (加热只有开与关)，在大多数情况下推荐启用 PID，有着保持稳定温度更好的效果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#if ENABLED(PIDTEMP)</span><br><span class="line">  &#x2F;&#x2F;#define PID_EDIT_MENU</span><br><span class="line">  &#x2F;&#x2F;#define PID_AUTOTUNE_MENU</span><br><span class="line">  &#x2F;&#x2F;#define PID_DEBUG</span><br><span class="line">  &#x2F;&#x2F;#define PID_OPENLOOP 1</span><br><span class="line">  &#x2F;&#x2F;#define SLOW_PWM_HEATERS</span><br><span class="line">  &#x2F;&#x2F;#define PID_PARAMS_PER_HOTEND</span><br><span class="line">  #define PID_FUNCTIONAL_RANGE 10</span><br></pre></td></tr></table></figure>
+<p>启用<code>PID_AUTOTUNE_MENU</code>可以在 LCD 上添加一个选项，能运行自动调谐周期 (运算 PID ) 并自动应用结果。如果您有多个挤出机，并且它们是不同的型号，则启用 <code>PID_PARAMS_PER_HOTEND</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Ultimaker</span><br><span class="line">  #define  DEFAULT_Kp 22.2</span><br><span class="line">  #define  DEFAULT_Ki 1.08</span><br><span class="line">  #define  DEFAULT_Kd 114</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; MakerGear</span><br><span class="line">  &#x2F;&#x2F;#define  DEFAULT_Kp 7.0</span><br><span class="line">  &#x2F;&#x2F;#define  DEFAULT_Ki 0.1</span><br><span class="line">  &#x2F;&#x2F;#define  DEFAULT_Kd 12</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; Mendel Parts V9 on 12V</span><br><span class="line">  &#x2F;&#x2F;#define  DEFAULT_Kp 63.0</span><br><span class="line">  &#x2F;&#x2F;#define  DEFAULT_Ki 2.25</span><br><span class="line">  &#x2F;&#x2F;#define  DEFAULT_Kd 440</span><br></pre></td></tr></table></figure>
+<p>这些是只是示例参数，纯粹占个位，<code>M303</code>指令的结果比这些更加精准，如果是新的机器，推荐先写入这些默认参数，测试获得精准的参数后，修改并再次烧写</p>
+<h4 id="热床"><a href="#热床" class="headerlink" title="热床"></a>热床</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define PIDTEMPBED</span><br></pre></td></tr></table></figure>
+<p>如果你的热床支持 PWM，启用<code>PIDTEMPBED</code>使热床使用 PID 进行温度控制 (与驱动挤出机的 PWM 频率相同)。使用默认的 PID_dT 时，PWM 频率为 7.689Hz，非常适合将方波驱动到阻性负载中，而不会对 FET 发热产生重大影响。</p>
+<p>如果您的配置与此配置有很大不同，并且您不了解所涉及的问题，则在确认您的硬件可以正常工作之前，您可能不应该使用床位 PID。使用<code>M303 E-1</code>调节该选项的床 PID。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define BED_LIMIT_SWITCHING</span><br></pre></td></tr></table></figure>
+<p>启用<code>BED_LIMIT_SWITCHING</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define MAX_BED_POWER 255</span><br></pre></td></tr></table></figure>
+<p>热床的最大功率。各种模式的温度控制 (PID, bang-bang, bang-bang with hysteresis) 都应遵守此要求。如果使用 255 以外的任何值会启用 PWM 模式。与<code>PIDTEMPBED</code>一样，除非您的热床可以使用 PWM，否则不要启用此功能。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#if ENABLED(PIDTEMPBED)</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F;#define PID_BED_DEBUG &#x2F;&#x2F; Sends debug data to the serial port.</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F;120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)</span><br><span class="line">  &#x2F;&#x2F;from FOPDT model - kp&#x3D;.39 Tp&#x3D;405 Tdead&#x3D;66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)</span><br><span class="line">  #define  DEFAULT_bedKp 10.00</span><br><span class="line">  #define  DEFAULT_bedKi .023</span><br><span class="line">  #define  DEFAULT_bedKd 305.4</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F;120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)</span><br><span class="line">  &#x2F;&#x2F;from pidautotune</span><br><span class="line">  &#x2F;&#x2F;#define  DEFAULT_bedKp 97.1</span><br><span class="line">  &#x2F;&#x2F;#define  DEFAULT_bedKi 1.41</span><br><span class="line">  &#x2F;&#x2F;#define  DEFAULT_bedKd 1675.16</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; FIND YOUR OWN: &quot;M303 E-1 C8 S90&quot; to run autotune on the bed at 90 degreesC for 8 cycles.</span><br><span class="line">#endif &#x2F;&#x2F; PIDTEMPBED</span><br></pre></td></tr></table></figure>
+<p>与热端的配置方式一样，而指令使用<code>M303 E-1</code></p>
+<h3 id="安全相关"><a href="#安全相关" class="headerlink" title="安全相关"></a>安全相关</h3><h4 id="禁止冷挤出"><a href="#禁止冷挤出" class="headerlink" title="禁止冷挤出"></a>禁止冷挤出</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define PREVENT_COLD_EXTRUSION</span><br><span class="line">#define EXTRUDE_MINTEMP 170</span><br></pre></td></tr></table></figure>
+<p>温度没有达到让耗材软化，这种阶段开始挤出会损坏机器。启用<code>PREVENT_COLD_EXTRUSION</code>，热端的温度低于<code>EXTRUDE_MINTEMP</code>所设定的值，将禁止挤出。<code>M302</code>可以修改这个值</p>
+<h4 id="禁止长挤出"><a href="#禁止长挤出" class="headerlink" title="禁止长挤出"></a>禁止长挤出</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define PREVENT_LENGTHY_EXTRUDE</span><br><span class="line">#define EXTRUDE_MAXLENGTH 200</span><br></pre></td></tr></table></figure>
+<p>长时间挤出可能不会损坏机器，但可能会浪费大量的耗材。<code>PREVENT_LENGTHY_EXTRUDE</code>主要防止 <code>G1</code> 命令中手滑打错字设定的值过大。对于 Bowden 设置，最大长度应设置为大于或等于 load/eject 长度</p>
+<h4 id="温度保护"><a href="#温度保护" class="headerlink" title="温度保护"></a>温度保护</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#define THERMAL_PROTECTION_HOTENDS &#x2F;&#x2F; Enable thermal protection for all extruders</span><br><span class="line">#define THERMAL_PROTECTION_BED     &#x2F;&#x2F; Enable thermal protection for the heated bed</span><br><span class="line">#define THERMAL_PROTECTION_CHAMBER &#x2F;&#x2F; Enable thermal protection for the heated chamber</span><br></pre></td></tr></table></figure>
+<p>温度保护避免温度过高时损坏机器或者发生无法挽救的事故。比如热敏电阻在打印过程中有可能会松动，Marlin 读取的温度很低，因此可以继续加热，只要温度读数较低，热端就会不停地加热，从而导致冒烟，渗水，打印件损坏甚至起火。</p>
+<p>Marlin 提供两段的热保护</p>
+<ol>
+<li>打开加热器时，检查温度实际上是否在升高。如果温度在特定时间段内 (默认情况下为20秒内升高2度) 未能充分升高，则打印机将关闭并显示 “Heating failed” (加热失败) 错误。这需要排查热敏电阻是否有断开、松动或配置错误，或者加热棒是否断开。</li>
+<li>监视热稳定性。如果测得的温度偏离目标温度的时间过长，则打印机将关闭并显示 “Thermal runaway” (热失控) 错误。这种情况需要检查热敏电阻和热端之间是否接触不良，PID 参数不正确或环境温度不利于打印机工作。更多热保护选项在<code>Configuration_adv.h</code>中。大多数情况，这些值可以保留不变，但应根据实际情况进行调整，防止误报。</li>
+</ol>
+<h2 id="运动系统"><a href="#运动系统" class="headerlink" title="运动系统"></a>运动系统</h2><p>Marlin 支持四种运动系统 (<a target="_blank" rel="noopener" href="https://youtu.be/ckq-RyxawKw">科普视频</a>)：Cartesian，Core (H-Bot)，Delta 和 SCARA。</p>
+<p>Cartesian 是最简单的运动系统，每个步进器应用到轴上。</p>
+<p>CoreXY 使用特殊的皮带布局来进行 XY 运动，需要一些额外的数学运算 (<a target="_blank" rel="noopener" href="https://youtu.be/8WLZ8OesMF4">科普视频</a>)。</p>
+<p>Delta 使用三个垂直的滑块运动转换为 XYZ 运动，该运动通过并联臂固定在滑架上的 “效应器” 中。</p>
+<p>SCARA 使用两个角关节在 XY 平面中移动手臂。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define COREXY</span><br><span class="line">&#x2F;&#x2F;#define COREXZ</span><br><span class="line">&#x2F;&#x2F;#define COREYZ</span><br><span class="line">&#x2F;&#x2F;#define COREYX</span><br><span class="line">&#x2F;&#x2F;#define COREZX</span><br><span class="line">&#x2F;&#x2F;#define COREZY</span><br></pre></td></tr></table></figure>
+<p>镜像翻转</p>
+<h2 id="Delta特殊设置"><a href="#Delta特殊设置" class="headerlink" title="Delta特殊设置"></a>Delta特殊设置</h2><p>这项设置是针对 Delta 运动系统的特殊设置，需要做大量的坐标转换的运算，这部分对 Delta 的精度影响是最大的，一些尺寸的数值需要完美的精确。官方文档貌似没有提及？下面将会参考配置文件的注释进行配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define DELTA</span><br></pre></td></tr></table></figure>
+<p>最基本的启动 Delta 设置的选项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define DELTA_SEGMENTS_PER_SECOND 200</span><br></pre></td></tr></table></figure>
+<p>由于 Delta 运算量大，有时候 MPU 忙于计算坐标，没有其他算力去运算 LCD 的显示，比如12864 的 LCD，使用起来会有卡顿现象，你需要调低这个值的参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define DELTA_HOME_TO_SAFE_ZONE</span><br></pre></td></tr></table></figure>
+<p>启用这个功能，Delta 归零触碰限位器后，效应器将会下降到 XY 移动限制的范围内。但有些情况不能启用这个功能，打印机打印完成后一般都会自动归零，但如果打印比较高的模型，归零的下降将有可能会撞上模型，轻则损坏模型，重则损坏打印机。如果你存在这些问题，请不要启用这个功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define DELTA_CALIBRATION_MENU</span><br></pre></td></tr></table></figure>
+<p>启用这项可以在菜单添加三点调平的功能，具体看<a target="_blank" rel="noopener" href="http://minow.blogspot.com/index.html#4918805519571907051">参考</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#define DELTA_AUTO_CALIBRATION</span><br><span class="line">#if ENABLED(DELTA_AUTO_CALIBRATION)</span><br><span class="line">    #define DELTA_CALIBRATION_DEFAULT_POINTS 4</span><br><span class="line">#endif</span><br><span class="line">#if EITHER(DELTA_AUTO_CALIBRATION, DELTA_CALIBRATION_MENU)</span><br><span class="line">    #define PROBE_MANUALLY_STEP 0.05      &#x2F;&#x2F; (mm)</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>DELTA_AUTO_CALIBRATION</code>添加 G33 自动调平，这个调平的结果将存储在 EEPROM 中，刷新固件不会影响这个值</li>
+<li><code>DELTA_CALIBRATION_DEFAULT_POINTS</code>则是探测点的数量</li>
+<li><code>PROBE_MANUALLY_STEP</code>是下探过程的速度，单位是mm</li>
+</ul>
+<p><strong>接下来的几个选项是重中之重，避免翻译或解释出错，会保留原文</strong></p>
+<p><strong>参数都是浮点数，需要保留小数点，即使小数点后是 0</strong></p>
+<p>先放一张图上来</p>
+<p><img src="http://forums.reprap.org/file.php?245,file=44007" alt="来自互联网"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define DELTA_PRINTABLE_RADIUS 90.0</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).</p>
+</blockquote>
+<p>Delta 的打印面一般是圆形，这里设置的是安全区域，参数是安全区域的半径，一般因为用料或者其他原因，打印机会有一些喷头没办法移动到的死角位，需要从打印面的半径减去这些死角的位置。如果设置不好，迎来的是严重的后果，比如并联臂断裂。单位是mm</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define DELTA_DIAGONAL_ROD 215.0</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Center-to-center distance of the holes in the diagonal push rods.</p>
+</blockquote>
+<p>这个是并联臂两边中孔的中心距，具体测量位置看上图同名的位置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define DELTA_HEIGHT 250.00</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Distance between bed and nozzle Z home position</p>
+</blockquote>
+<p>这个是归零后喷嘴和热床之间的距离，这个值可以被 G33 自动调平修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">define DELTA_ENDSTOP_ADJ &#123;0.0，0.0，0.0&#125;</span><br></pre></td></tr></table></figure>
+<p>这个应该是限位器的偏移量，一开始可以都设，这个值可以被 G33 自动调平修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define DELTA_RADIUS 105.2</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Horizontal distance bridged by diagonal push rods when effector is centered.</p>
+</blockquote>
+<p>这个是效应器居中时，并联臂连接效应器的中心，到并联臂连接滑车的中心的水平距离，具体测量位置看上图同名的位置，这个值可以被 G33 自动调平修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define DELTA_TOWER_ANGLE_TRIM &#123; 0.0, 0.0, 0.0 &#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Trim adjustments for individual towers</p>
+<p>tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0</p>
+<p>measured in degrees anticlockwise looking from above the printer</p>
+</blockquote>
+<p>有些情况 X Y Z 塔所面向的方向并不会交汇与一点，也就是三个塔所组成的三角形并不是等边三角形，即使淘宝买的注塑/金属的角件，安装有一定的虚位，这些虚位是为了更容易装上，但安装后会出现偏移的情况。</p>
+<p>这里可以从软件层面调整三个塔的角度，这个值可以被 G33 自动调平修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define DELTA_RADIUS_TRIM_TOWER &#123; 0.0, 0.0, 0.0 &#125;</span><br><span class="line">#define DELTA_DIAGONAL_ROD_TRIM_TOWER &#123; 0.0, 0.0, 0.0 &#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Delta radius and diagonal rod adjustments</p>
+</blockquote>
+<p>Delta 的半径和并联臂的调整，官方默认配置文件这两行是注释的，具体作用也没有太多说明</p>
+<blockquote>
+<p>我想说说手动调平和自动调平的利弊</p>
+<p>国内的一些 3d 打印机的固件都停留在 Marlin 1 的时代，而现在已经更新换代很久了。Marlin 1.x 的时候，Delta 的调平问题一直都是非常困难，上图中需要测量的项目都是 1.x 版本需要填入的参数，看图好像挺容易测，实际太多干扰因素，要拿到绝对精准的数值，很难丝毫不差。</p>
+<p>而现在的 2.x，Marlin 尽可能想到各种可能影响精度的因素，其他可以运算的都自己运算，可以说进步非常大，而且上面的参数很多都可以通过 G33 修改，可以逆向运算出差值，门槛已经非常的低。</p>
+<p>但是，软件处理机械上的偏差有限，有些情况还是不能处理，比如说热床相对三个塔不垂直，这种情况怎么调，打印出来的成品都是歪的，所以，机械上能精准的尽可能精准，剩下的交给软件吧</p>
+</blockquote>
+<h2 id="限位器"><a href="#限位器" class="headerlink" title="限位器"></a>限位器</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#define USE_XMIN_PLUG</span><br><span class="line">#define USE_YMIN_PLUG</span><br><span class="line">#define USE_ZMIN_PLUG</span><br><span class="line">&#x2F;&#x2F;#define USE_XMAX_PLUG</span><br><span class="line">&#x2F;&#x2F;#define USE_YMAX_PLUG</span><br><span class="line">&#x2F;&#x2F;#define USE_ZMAX_PLUG</span><br></pre></td></tr></table></figure>
+<p>指定每个轴的限位器是这个轴的最大值还是最小值。大多数打印机三个都是最小值，但 Delta 都使用最大值。探头可以共享 Z min 插头，也可以使用一个或多个额外的连接器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#define ENDSTOPPULLUPS</span><br><span class="line"></span><br><span class="line">#if DISABLED(ENDSTOPPULLUPS)</span><br><span class="line">  &#x2F;&#x2F; Disable ENDSTOPPULLUPS to set pullups individually</span><br><span class="line">  &#x2F;&#x2F;#define ENDSTOPPULLUP_XMAX</span><br><span class="line">  &#x2F;&#x2F;#define ENDSTOPPULLUP_YMAX</span><br><span class="line">  &#x2F;&#x2F;#define ENDSTOPPULLUP_ZMAX</span><br><span class="line">  &#x2F;&#x2F;#define ENDSTOPPULLUP_XMIN</span><br><span class="line">  &#x2F;&#x2F;#define ENDSTOPPULLUP_YMIN</span><br><span class="line">  &#x2F;&#x2F;#define ENDSTOPPULLUP_ZMIN</span><br><span class="line">  &#x2F;&#x2F;#define ENDSTOPPULLUP_ZMIN_PROBE</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>默认所有限位器都上拉电阻，以防止浮动，如果要单独对每个限位器配置，可以禁用<code>ENDSTOPPULLUPS</code>，然后单独配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define ENDSTOPPULLDOWNS</span><br><span class="line"></span><br><span class="line">#if DISABLED(ENDSTOPPULLDOWNS)</span><br><span class="line">  &#x2F;&#x2F; Disable ENDSTOPPULLDOWNS to set pulldowns individually</span><br><span class="line">  &#x2F;&#x2F;#define ENDSTOPPULLDOWN_XMAX</span><br><span class="line">  &#x2F;&#x2F;#define ENDSTOPPULLDOWN_YMAX</span><br><span class="line">  &#x2F;&#x2F;#define ENDSTOPPULLDOWN_ZMAX</span><br><span class="line">  &#x2F;&#x2F;#define ENDSTOPPULLDOWN_XMIN</span><br><span class="line">  &#x2F;&#x2F;#define ENDSTOPPULLDOWN_YMIN</span><br><span class="line">  &#x2F;&#x2F;#define ENDSTOPPULLDOWN_ZMIN</span><br><span class="line">  &#x2F;&#x2F;#define ENDSTOPPULLDOWN_ZMIN_PROBE</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>默认所有限位器都不下拉电阻，配置方式上</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Mechanical endstop with COM to ground and NC to Signal uses &quot;false&quot; here (most common setup).</span><br><span class="line">#define X_MIN_ENDSTOP_INVERTING false &#x2F;&#x2F; set to true to invert the logic of the endstop.</span><br><span class="line">#define Y_MIN_ENDSTOP_INVERTING false &#x2F;&#x2F; set to true to invert the logic of the endstop.</span><br><span class="line">#define Z_MIN_ENDSTOP_INVERTING false &#x2F;&#x2F; set to true to invert the logic of the endstop.</span><br><span class="line">#define X_MAX_ENDSTOP_INVERTING false &#x2F;&#x2F; set to true to invert the logic of the endstop.</span><br><span class="line">#define Y_MAX_ENDSTOP_INVERTING false &#x2F;&#x2F; set to true to invert the logic of the endstop.</span><br><span class="line">#define Z_MAX_ENDSTOP_INVERTING false &#x2F;&#x2F; set to true to invert the logic of the endstop.</span><br><span class="line">#define Z_MIN_PROBE_ENDSTOP_INVERTING false &#x2F;&#x2F; set to true to invert the logic of the endstop.</span><br></pre></td></tr></table></figure>
+<p>不同的限位器型号，会产生不同的型号，有些闭合时会发出高电平，有些会发出低电平，如果你使用<code>M119</code>测试时发现检测与现实相反了，你激活其中某个限位器以相反信号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define X_DRIVER_TYPE  A4988</span><br><span class="line">&#x2F;&#x2F;#define Y_DRIVER_TYPE  A4988</span><br><span class="line">&#x2F;&#x2F;#define Z_DRIVER_TYPE  A4988</span><br><span class="line">&#x2F;&#x2F;#define X2_DRIVER_TYPE A4988</span><br><span class="line">&#x2F;&#x2F;#define Y2_DRIVER_TYPE A4988</span><br><span class="line">&#x2F;&#x2F;#define Z2_DRIVER_TYPE A4988</span><br><span class="line">&#x2F;&#x2F;#define Z3_DRIVER_TYPE A4988</span><br><span class="line">&#x2F;&#x2F;#define E0_DRIVER_TYPE A4988</span><br><span class="line">&#x2F;&#x2F;#define E1_DRIVER_TYPE A4988</span><br><span class="line">&#x2F;&#x2F;#define E2_DRIVER_TYPE A4988</span><br><span class="line">&#x2F;&#x2F;#define E3_DRIVER_TYPE A4988</span><br><span class="line">&#x2F;&#x2F;#define E4_DRIVER_TYPE A4988</span><br><span class="line">&#x2F;&#x2F;#define E5_DRIVER_TYPE A4988</span><br></pre></td></tr></table></figure>
+<p>这里选择步进电机驱动器的型号，并开启某些步进电机驱动器的高级选项。您也可以在<code>Configuration_adv.h</code>中覆盖计时选项。默认情况下使用 A4988</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define ENDSTOP_INTERRUPTS_FEATURE</span><br></pre></td></tr></table></figure>
+<p>如果你的限位器有中断功能，你可以在这里开启，这样不需要 CPU 去轮询，节省周期</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define ENDSTOP_NOISE_FEATURE</span><br></pre></td></tr></table></figure>
+<p>如果你的限位器被某些不应该出现的因素干扰而触发，你可以启用这项功能</p>
+<h2 id="步进电机驱动"><a href="#步进电机驱动" class="headerlink" title="步进电机驱动"></a>步进电机驱动</h2><h3 id="自定义挤出机参数"><a href="#自定义挤出机参数" class="headerlink" title="自定义挤出机参数"></a>自定义挤出机参数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define DISTINCT_E_FACTORS</span><br></pre></td></tr></table></figure>
+<p>如果你有多个挤出机，而每个挤出机的步进数都不一样，你可以启用这一项，在接下来指定设置，如果挤出机数量大于设置的数量，最后一个数值将会应用于剩下的挤出机</p>
+<h3 id="步进电机每毫米步数"><a href="#步进电机每毫米步数" class="headerlink" title="步进电机每毫米步数"></a>步进电机每毫米步数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define DEFAULT_AXIS_STEPS_PER_UNIT   &#123; 80, 80, 4000, 500 &#125;</span><br></pre></td></tr></table></figure>
+<p>这个是打印机精度的关键参数，这里设置的是每毫米，步进电机需要走多少步，可以使用 <code>M92</code> 覆盖这些值。你可以使用<a target="_blank" rel="noopener" href="http://prusaprinters.org/calculator/">Prusa Calculator</a>来获得数值</p>
+<p>也有这样设置的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; variables to calculate steps</span><br><span class="line">#define XYZ_FULL_STEPS_PER_ROTATION 200</span><br><span class="line">#define XYZ_MICROSTEPS 16</span><br><span class="line">#define XYZ_BELT_PITCH 2</span><br><span class="line">#define XYZ_PULLEY_TEETH 20</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; delta speeds must be the same on xyz</span><br><span class="line">#define DEFAULT_XYZ_STEPS_PER_UNIT ((XYZ_FULL_STEPS_PER_ROTATION) * (XYZ_MICROSTEPS) &#x2F; double(XYZ_BELT_PITCH) &#x2F; double(XYZ_PULLEY_TEETH))</span><br><span class="line">#define DEFAULT_AXIS_STEPS_PER_UNIT   &#123; DEFAULT_XYZ_STEPS_PER_UNIT, DEFAULT_XYZ_STEPS_PER_UNIT, DEFAULT_XYZ_STEPS_PER_UNIT, 700 &#125;  &#x2F;&#x2F; default steps per unit for Kossel (GT2, 20 tooth)</span><br></pre></td></tr></table></figure>
+<p>这种设置方式不需要使用计算器，只需要输入<code>XYZ_FULL_STEPS_PER_ROTATION</code>、<code>XYZ_MICROSTEPS</code>、<code>XYZ_BELT_PITCH</code>、<code>XYZ_PULLEY_TEETH</code>即可</p>
+<p>不过还是要注意挤出机 E 的参数总是与 XYZ 不一样，这里提供两种测量方式</p>
+<ul>
+<li><p>$$<br>E_{step} = \frac{360°}{angle×microstep×C}<br>$$</p>
+<p>C 为送丝轮周长，angle 为步进电机的步进角度，microstep 为微步</p>
+</li>
+<li><p>不急还没写</p>
+</li>
+</ul>
+<h3 id="步进电机最高速度"><a href="#步进电机最高速度" class="headerlink" title="步进电机最高速度"></a>步进电机最高速度</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define DEFAULT_MAX_FEEDRATE &#123; 500, 500, 2.25, 45 &#125;</span><br></pre></td></tr></table></figure>
+<p>步进电机的最高速度，单位是 mm/s，可以使用 <code>M203</code> 修改</p>
+<h3 id="最大加速度"><a href="#最大加速度" class="headerlink" title="最大加速度"></a>最大加速度</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define DEFAULT_MAX_ACCELERATION      &#123; 3000, 3000, 100, 10000 &#125;</span><br></pre></td></tr></table></figure>
+<p>默认最大加速度，单位是 mm/s，可以使用 <code>M201</code> 修改</p>
+<h3 id="默认加速度"><a href="#默认加速度" class="headerlink" title="默认加速度"></a>默认加速度</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">define DEFAULT_ACCELERATION          3000    &#x2F;&#x2F; X, Y, Z and E acceleration for printing moves</span><br><span class="line">#define DEFAULT_RETRACT_ACCELERATION  3000    &#x2F;&#x2F; E acceleration for retracts</span><br><span class="line">#define DEFAULT_TRAVEL_ACCELERATION   3000    &#x2F;&#x2F; X, Y, Z acceleration for travel (non printing) moves</span><br></pre></td></tr></table></figure>
+<p>进一步限制加速度，并可以细分打印，缩进，空运的加速度，可以通过 M204 修改</p>
+<h3 id="结点偏差"><a href="#结点偏差" class="headerlink" title="结点偏差"></a>结点偏差</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define JUNCTION_DEVIATION</span><br><span class="line">#if ENABLED(JUNCTION_DEVIATION)</span><br><span class="line">  #define JUNCTION_DEVIATION_MM 0.02  &#x2F;&#x2F; (mm) Distance from real junction edge</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Use Junction Deviation instead of traditional Jerk Limiting. Jerk settings is overriden with Junction Deviation.</p>
+</blockquote>
+<p>(机翻参考) 使用 “结点偏差” 而不是传统的 “抖动限制”。急动设置会被 “交界偏差” 所覆盖。</p>
+<h3 id="加速抖动"><a href="#加速抖动" class="headerlink" title="加速抖动"></a>加速抖动</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#define DEFAULT_XJERK                 20.0</span><br><span class="line">#define DEFAULT_YJERK                 20.0</span><br><span class="line">#define DEFAULT_ZJERK                  0.4</span><br><span class="line">#define DEFAULT_EJERK                  5.0</span><br></pre></td></tr></table></figure>
+<p>这个是步进电机从静止瞬间加速能达到最大的值。有时候打印路径曲折，不断的弯曲，如果快速达到最高速度，所产生的力非常大，对电机负载大，有时候还会“飘”过头，丝会产生偏移。这里一般参考默认即可。可以使用 <code>M205</code> 修改</p>
+<h3 id="S-曲线加速"><a href="#S-曲线加速" class="headerlink" title="S 曲线加速"></a>S 曲线加速</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define S_CURVE_ACCELERATION</span><br></pre></td></tr></table></figure>
+<p>使用 S 函数平滑加速曲线</p>
+<h2 id="Z-探针"><a href="#Z-探针" class="headerlink" title="Z 探针"></a>Z 探针</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN</span><br></pre></td></tr></table></figure>
+<p>如果你的探针是连接到 Z MIN 所在的引脚，请在所有情况下使用此选项。Delta 的限位器终点始终是 MAX 的位置，所以 Delta 也需要启用这项。</p>
+<p>您可以使用此选项配置没有 Z 终点的打印机。在这种情况下，探针将用于 Z 轴归零，并且您将需要启用 <code>Z_SAFE_HOMING</code> 以确保在 Z 轴归零时将探针放置在床上方 (在 X 和 Y 之后执行) 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define Z_MIN_PROBE_PIN 32</span><br></pre></td></tr></table></figure>
+<p>如果您已将探针连接到除 Z MIN 之外的其他引脚，请使用此选项。启用此选项后，默认情况下，Marlin 将引脚文件中指定的 <code>Z_MIN_PROBE_PIN</code> (通常是 X 或 Z MAX，因为最有可能不使用它们) 。如果需要使用其他引脚，请在<code>Configuration.h</code>中为 <code>Z_MIN_PROBE_PIN</code> 自定义引脚号。</p>
+<h3 id="探头类型"><a href="#探头类型" class="headerlink" title="探头类型"></a>探头类型</h3><p>探头一般指自动调平传感器，Marlin 支持大量使用探头的方式</p>
+<h4 id="无使用"><a href="#无使用" class="headerlink" title="无使用"></a>无使用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define PROBE_MANUALLY</span><br><span class="line">&#x2F;&#x2F;#define MANUAL_PROBE_START_Z 0.2</span><br></pre></td></tr></table></figure>
+<p>如果你没有探头，你还是可以通过启用此选项</p>
+<p>使用床平整 <code>AUTO_BED_LEVELING_ *</code>，通过 PROBE_MANUALLY，G29 命令仅将喷嘴移动到下一个暂停的探针点。用一张纸调节Z高度，，让纸刚好通过喷嘴而不被喷嘴压死，然后再次发送G29以继续下一个点。</p>
+<p>通过 <code>PROBE_MANUALLY</code>，<code>G29</code> 命令仅将喷嘴移动到下一个暂停的探针点。用一张纸调节Z高度，，让纸刚好通过喷嘴而不被喷嘴压死，然后再次发送<code>G29</code>以继续下一个点。</p>
+<p>您还可以启用<code>LCD_BED_LEVELING</code>来向 LCD 添加 “Level Bed” 菜单项，以进行完全交互式的水平调节。<code>MANUAL_PROBE_START_Z</code>设置手动探测期间打印机最初移动到每个点后开始的高度。禁用此功能后，打印机将移动到第一个探测点的 Z0，然后每个连续的探测点将使用其前面的探测点的高度。</p>
+<h4 id="固定式"><a href="#固定式" class="headerlink" title="固定式"></a>固定式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define FIX_MOUNTED_PROBE</span><br></pre></td></tr></table></figure>
+<p>此选项适用于任何已固定就位的探头，无需部署或存放。</p>
+<h4 id="舵机驱动式"><a href="#舵机驱动式" class="headerlink" title="舵机驱动式"></a>舵机驱动式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define Z_PROBE_SERVO_NR 0       &#x2F;&#x2F; Defaults to SERVO 0 connector.</span><br><span class="line">&#x2F;&#x2F;#define Z_SERVO_ANGLES &#123; 70, 0 &#125; &#x2F;&#x2F; Z Servo Deploy and Stow angles</span><br></pre></td></tr></table></figure>
+<p>如果你的探头可以使用舵机部署和回收， 你要指定一个舵机和设置部署和回收的角度。使用<code>M280</code>查找最佳的<code>Z_SERVO_ANGLES</code>值。</p>
+<h4 id="BLTouch"><a href="#BLTouch" class="headerlink" title="BLTouch"></a>BLTouch</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define BLTOUCH</span><br></pre></td></tr></table></figure>
+<p>ANTCLABS BLTouch 探头使用定制电路和一块磁铁来升高和降低充当测头的金属引脚。BLTouch 使用舵机驱动，并使用特定的角度进行控制。启用此选项后，其他所需的设置会自动进行配置 (例如，无需设置角度) 。</p>
+<h4 id="TOUCH-MI"><a href="#TOUCH-MI" class="headerlink" title="TOUCH MI"></a>TOUCH MI</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define TOUCH_MI_PROBE</span><br><span class="line">#if ENABLED(TOUCH_MI_PROBE)</span><br><span class="line">  #define TOUCH_MI_RETRACT_Z 0.5                  &#x2F;&#x2F; Height at which the probe retracts</span><br><span class="line">  &#x2F;&#x2F;#define TOUCH_MI_DEPLOY_XPOS (X_MAX_BED + 2)  &#x2F;&#x2F; For a magnet on the right side of the bed</span><br><span class="line">  &#x2F;&#x2F;#define TOUCH_MI_MANUAL_DEPLOY                &#x2F;&#x2F; For manual deploy (LCD menu)</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>hotends.fr 的 Touch-MI Probe 是个巧妙的装置，通过将 X 轴移动到床边缘的磁铁上来部署并激活。默认情况下，假定磁铁位于左侧并由房屋激活。如果磁铁在右侧，则启用并将 <code>TOUCH_MI_DEPLOY_XPOS</code> 设置为展开位置。另外，还需要以下选项：<code>BABYSTEPPING</code>，<code>BABYSTEP_ZPROBE_OFFSET</code>，<code>Z_SAFE_HOMING</code>，以及至少 <code>Z_HOMING_HEIGHT</code>10的高度。</p>
+<h4 id="电磁式"><a href="#电磁式" class="headerlink" title="电磁式"></a>电磁式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define SOLENOID_PROBE</span><br></pre></td></tr></table></figure>
+<p>使用电磁 (定义为 SOL1_PIN) 的探针。</p>
+<h4 id="分离式"><a href="#分离式" class="headerlink" title="分离式"></a>分离式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define Z_PROBE_SLED</span><br><span class="line">&#x2F;&#x2F;#define SLED_DOCKING_OFFSET 5</span><br></pre></td></tr></table></figure>
+<p>此类探针安装在 X 轴远端的可拆卸 “底座” 上。探测之前，X 滑架移至远端并拿起探针。探测完成后，它将放下探针。<code>SLED_DOCKING_OFFSET</code> 指定 X 轴必须移动的额外距离才能拾取探针。0 是非常完美，实际情况可能需要进一步推进。</p>
+<h4 id="机械式"><a href="#机械式" class="headerlink" title="机械式"></a>机械式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define RACK_AND_PINION_PROBE</span><br><span class="line">#if ENABLED(RACK_AND_PINION_PROBE)</span><br><span class="line">  #define Z_PROBE_DEPLOY_X  X_MIN_POS</span><br><span class="line">  #define Z_PROBE_RETRACT_X X_MAX_POS</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>使用类似 Marty Rice 设计的 Wilson II 机械式探针可以使用此项</p>
+<h4 id="内六角扳手式"><a href="#内六角扳手式" class="headerlink" title="内六角扳手式"></a>内六角扳手式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define Z_PROBE_ALLEN_KEY</span><br></pre></td></tr></table></figure>
+<p>可伸缩的 Z 型探针，使用六角扳手作为探针。具体查看 <a target="_blank" rel="noopener" href="http://reprap.org/wiki/Kossel#Automatic_bed_leveling_probe">RepRap</a>。它通过紧靠 z 轴皮带展开，并通过向下推动探针使其缩回。更多信息将包含在即将发布的 Delta 配置页面中。 (都 2.0 了还没写官方文档</p>
+<h3 id="探头偏移"><a href="#探头偏移" class="headerlink" title="探头偏移"></a>探头偏移</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#define X_PROBE_OFFSET_FROM_EXTRUDER 10  &#x2F;&#x2F; X offset: -left  +right  [of the nozzle]</span><br><span class="line">#define Y_PROBE_OFFSET_FROM_EXTRUDER 10  &#x2F;&#x2F; Y offset: -front +behind [the nozzle]</span><br><span class="line">#define Z_PROBE_OFFSET_FROM_EXTRUDER 0   &#x2F;&#x2F; Z offset: -below +above  [the nozzle]</span><br></pre></td></tr></table></figure>
+<p>探头探测点与喷嘴尖端的相对坐标，具体怎样配置可以参考注释。可以用 M851 Z 或 LCD 覆盖 Z 轴上的偏移，这些偏移量可以通过 <code>M500</code> 保存到 EEPROM</p>
+<h3 id="距边缘的距离"><a href="#距边缘的距离" class="headerlink" title="距边缘的距离"></a>距边缘的距离</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define MIN_PROBE_EDGE 10</span><br></pre></td></tr></table></figure>
+<p>某些探针需要防止撞到边缘</p>
+<h3 id="探测速度"><a href="#探测速度" class="headerlink" title="探测速度"></a>探测速度</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; X and Y axis travel speed (mm&#x2F;m) between probes</span><br><span class="line">#define XY_PROBE_SPEED 8000</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Feedrate (mm&#x2F;m) for the first approach when double-probing (MULTIPLE_PROBING &#x3D;&#x3D; 2)</span><br><span class="line">#define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Feedrate (mm&#x2F;m) for the &quot;accurate&quot; probe of each point</span><br><span class="line">#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST &#x2F; 2)</span><br></pre></td></tr></table></figure>
+<p>探测越快越好，但应调整 Z 轴速度以获得最准确的数据。取决于探头，可能需要较低的 Z 探测速度才能获得准确的结果</p>
+<h3 id="多个探针"><a href="#多个探针" class="headerlink" title="多个探针"></a>多个探针</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define MULTIPLE_PROBING 2</span><br><span class="line">&#x2F;&#x2F;#define EXTRA_PROBING    1</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Probing mutiple times yields better results. Set to 2 for a fast/slow probe - the second probe result will be used. Set to 3 or more for slow probes - the average result will be used.</p>
+</blockquote>
+<p>(机翻参考) 多个探针会产生更好的结果。将快速 / 慢速探针设置为 2 - 将使用第二个探针结果。对于慢速探针，设置为 3 或更大 - 将使用平均结果。</p>
+<h3 id="探针安全区"><a href="#探针安全区" class="headerlink" title="探针安全区"></a>探针安全区</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#define Z_CLEARANCE_DEPLOY_PROBE   10 &#x2F;&#x2F; Z Clearance for Deploy&#x2F;Stow</span><br><span class="line">#define Z_CLEARANCE_BETWEEN_PROBES  5 &#x2F;&#x2F; Z Clearance between probe points</span><br><span class="line">#define Z_CLEARANCE_MULTI_PROBE     5 &#x2F;&#x2F; Z Clearance between multiple probes</span><br><span class="line">&#x2F;&#x2F;#define Z_AFTER_PROBING           5 &#x2F;&#x2F; Z position after probing is done</span><br><span class="line"></span><br><span class="line">#define Z_PROBE_LOW_POINT          -2 &#x2F;&#x2F; Farthest distance below the trigger-point to go before stopping</span><br></pre></td></tr></table></figure>
+<p>Z探针在部署，回收和移动时需要间隙，以避免撞到底座和其他硬件。舵机安装的探头需要额外的空间来使臂旋转。电感式探头需要一定的空间以防止过早触发。</p>
+<p>使用这些设置来指定抬起 (放下) 探针的距离 (mm)。设置的值适用于通过<code>Z_PROBE_OFFSET_FROM_EXTRUDER</code>，<code>M851</code> 或 LCD 设置的任何探针的 Z 偏移。对于这些设置，只有大于等于1的整数值有效。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define Z_PROBE_OFFSET_RANGE_MIN -20</span><br><span class="line">#define Z_PROBE_OFFSET_RANGE_MAX 20</span><br></pre></td></tr></table></figure>
+<p>使用 <code>M851</code>和 LCD 菜单调整Z探针偏移的范围。</p>
+<h3 id="测试探针"><a href="#测试探针" class="headerlink" title="测试探针"></a>测试探针</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define Z_MIN_PROBE_REPEATABILITY_TEST</span><br></pre></td></tr></table></figure>
+<p>这使您能够使用 <code>M48</code> 测试探针的可靠性。它会为您提供探针的标准偏差。提示：工作中，通常可以接受0.02 mm的床水平偏差。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Before deploy&#x2F;stow pause for user confirmation</span><br><span class="line">&#x2F;&#x2F;#define PAUSE_BEFORE_DEPLOY_STOW</span><br><span class="line">#if ENABLED(PAUSE_BEFORE_DEPLOY_STOW)</span><br><span class="line">  &#x2F;&#x2F;#define PAUSE_PROBE_DEPLOY_WHEN_TRIGGERED &#x2F;&#x2F; For Manual Deploy Allenkey Probe</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>部署 / 回收之前需要用户确认</p>
+<h3 id="关闭加热器才探测"><a href="#关闭加热器才探测" class="headerlink" title="关闭加热器才探测"></a>关闭加热器才探测</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define PROBING_HEATERS_OFF       &#x2F;&#x2F; Turn heaters off when probing</span><br><span class="line">#if ENABLED(PROBING_HEATERS_OFF)</span><br><span class="line">  &#x2F;&#x2F;#define WAIT_FOR_BED_HEATER     &#x2F;&#x2F; Wait for bed to heat back up between probes (to improve accuracy)</span><br><span class="line">#endif</span><br><span class="line">&#x2F;&#x2F;#define PROBING_FANS_OFF          &#x2F;&#x2F; Turn fans off when probing</span><br><span class="line">&#x2F;&#x2F;#define PROBING_STEPPERS_OFF      &#x2F;&#x2F; Turn steppers off (unless needed to hold position) when probing</span><br><span class="line">&#x2F;&#x2F;#define DELAY_BEFORE_PROBING 200  &#x2F;&#x2F; (ms) To prevent vibrations from triggering piezo sensors</span><br></pre></td></tr></table></figure>
+<p>如果通常在加热的情况下进行打印，则加热的床和挤出机时进行探测，将产生更加精准的结果。如果由于加热，探针遇到电气噪音，请启用<code>PROBING_HEATERS_OFF</code>。也可以添加延迟以使噪声和振动稳定下来。</p>
+<h2 id="步进电机基本设置"><a href="#步进电机基本设置" class="headerlink" title="步进电机基本设置"></a>步进电机基本设置</h2><h3 id="电机使能电平"><a href="#电机使能电平" class="headerlink" title="电机使能电平"></a>电机使能电平</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#define X_ENABLE_ON 0</span><br><span class="line">#define Y_ENABLE_ON 0</span><br><span class="line">#define Z_ENABLE_ON 0</span><br><span class="line">#define E_ENABLE_ON 0 &#x2F;&#x2F; For all extruders</span><br></pre></td></tr></table></figure>
+<p>这些选项设置用于步进电机使能的引脚状态。对于低电平有效，最常见的设置是0（LOW) 。对于高电平有效，请使用 1 或HIGH。</p>
+<h3 id="非运动状态关电机"><a href="#非运动状态关电机" class="headerlink" title="非运动状态关电机"></a>非运动状态关电机</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#define DISABLE_X false</span><br><span class="line">#define DISABLE_Y false</span><br><span class="line">#define DISABLE_Z false</span><br></pre></td></tr></table></figure>
+<p>不发出运动时，使用这些选项可暂时关闭步进电机。这是为了以比正常电流更高的速度运行步进电机，以产生更大的扭矩为代价，以增加驱动器和步进电机的热量为代价。禁用步进之间的步进使电动机和驱动器有机会冷却。</p>
+<p>从理论上讲听起来不错，但在实践中却有缺点。禁用的步进器无法稳定热端。这导致精度差并且带有很大的轴向漂移可能性 (失步) 。大多数3D打印机使用 “开环” 控制系统，这意味着该软件无法确定指令执行后是否按照预定计划运动。它只是发送命令并假定已遵守命令。</p>
+<p>实际上，对于校准良好的机器而言没有影响，使用开环系统可以节省大量成本，并具有出色的质量。这里不建议使用这里的方式。有很多更好的方法来解决步进器/驱动器过热的问题。例如：步进/驱动器散热器，主动冷却，轴上的双电机，减少微步进，检查皮带是否过张，检查组件的运动是否平稳等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define DISABLE_REDUCED_ACCURACY_WARNING</span><br></pre></td></tr></table></figure>
+<p>启用此选项可禁止在可能会降低精度的情况下发出警告。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define DISABLE_E false 					&#x2F;&#x2F; For all extruders</span><br><span class="line">#define DISABLE_INACTIVE_EXTRUDER	false 	&#x2F;&#x2F; Keep only the active extruder enabled</span><br></pre></td></tr></table></figure>
+<p>这个选项的作用类似于<code>DISABLE_ [XYZ]</code>，控制的是挤出机，但与一台或多台挤出机有关。</p>
+<p>默认设置中，活动的挤出机保持启用状态，同时禁用所有非活动挤出机。对于使用“擦拭塔”或其他方式来确保喷嘴已注满且在两次使用之间高温耗材不下渗的情况下，这是合理的。</p>
+<h3 id="电机方向"><a href="#电机方向" class="headerlink" title="电机方向"></a>电机方向</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#define INVERT_X_DIR false</span><br><span class="line">#define INVERT_Y_DIR false</span><br><span class="line">#define INVERT_Z_DIR false</span><br><span class="line"></span><br><span class="line">#define INVERT_E0_DIR false</span><br><span class="line">#define INVERT_E1_DIR false</span><br><span class="line">#define INVERT_E2_DIR false</span><br><span class="line">#define INVERT_E3_DIR false</span><br><span class="line">#define INVERT_E4_DIR false</span><br></pre></td></tr></table></figure>
+<p>这些里可以设置每个轴的电动机反向运动。第一次设置这些时要小心。轴移动方向错误会导致损坏。如果可能的话，不带皮带的情况下正确安装它们。测试之前，将笔架和床移动到中间。使用终端或 LCD “Move Axis” 菜单测试每个轴是否正确移动。如果轴反转，则将插头翻转一下或更改其反转设置。</p>
+<h2 id="归零和安全区"><a href="#归零和安全区" class="headerlink" title="归零和安全区"></a>归零和安全区</h2><h3 id="Z-轴归零后的高度"><a href="#Z-轴归零后的高度" class="headerlink" title="Z 轴归零后的高度"></a>Z 轴归零后的高度</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define NO_MOTION_BEFORE_HOMING	&#x2F;&#x2F; Inhibit movement until all axes have been homed</span><br><span class="line">&#x2F;&#x2F;#define UNKNOWN_Z_NO_RAISE		&#x2F;&#x2F; Don&#39;t raise Z (lower the bed) if Z is &quot;unknown.&quot;</span><br><span class="line">									&#x2F;&#x2F;For beds that fall when Z is powered off.</span><br><span class="line">&#x2F;&#x2F;#define Z_HOMING_HEIGHT 4</span><br></pre></td></tr></table></figure>
+<p>此值在 X 轴与 Y 轴归零前，将 Z 轴提升到指定高度，这对于防止头部撞到床架 (例如螺钉) 上很有用。这也适用于自动床平整，仅在触发时当 Z 轴高度小于定义的值时，否则 Z 轴将不会移动。</p>
+<h3 id="归零方向"><a href="#归零方向" class="headerlink" title="归零方向"></a>归零方向</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#define X_HOME_DIR -1</span><br><span class="line">#define Y_HOME_DIR -1</span><br><span class="line">#define Z_HOME_DIR -1</span><br></pre></td></tr></table></figure>
+<p>每个轴的归零方向，-1 为最小值，1为最大值。一般 Cartesian 和 CoreXY 用最小值归零，而 Delta 用最大值归零</p>
+<h3 id="安全区大小"><a href="#安全区大小" class="headerlink" title="安全区大小"></a>安全区大小</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define X_BED_SIZE 200</span><br><span class="line">#define Y_BED_SIZE 200</span><br></pre></td></tr></table></figure>
+<p>您可以直接指定床的尺寸。如果 X/Y 滑架能够移动到床外，则可以在下面指定更大的范围。Detail 配置文件直接使用<code>DELTA_PRINTABLE_RADIUS</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#define X_MIN_POS 0</span><br><span class="line">#define Y_MIN_POS 0</span><br><span class="line">#define Z_MIN_POS 0</span><br><span class="line">#define X_MAX_POS X_BED_SIZE</span><br><span class="line">#define Y_MAX_POS Y_BED_SIZE</span><br><span class="line">#define Z_MAX_POS 170</span><br></pre></td></tr></table></figure>
+<p>这里一般设置打印机的物理极限。通常将<code>[XYZ] _MIN _POS</code>值设置为 0，因为限位器放在床的极限位置。<code>[XYZ] _MAX_POS</code>应该设置为最远的可到达点。默认情况下，这些位置用作您的归零位特殊情况可以使用<code>MANUAL _[XYZ] _HOME_POS</code>选项覆盖这些选项。</p>
+<p>可以使用 <code>M206</code> 进行偏移</p>
+<h3 id="虚拟限位器-软件限位器"><a href="#虚拟限位器-软件限位器" class="headerlink" title="虚拟限位器 (软件限位器)"></a>虚拟限位器 (软件限位器)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#define MIN_SOFTWARE_ENDSTOPS</span><br><span class="line">#if ENABLED(MIN_SOFTWARE_ENDSTOPS)</span><br><span class="line">  #define MIN_SOFTWARE_ENDSTOP_X</span><br><span class="line">  #define MIN_SOFTWARE_ENDSTOP_Y</span><br><span class="line">  #define MIN_SOFTWARE_ENDSTOP_Z</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">#define MAX_SOFTWARE_ENDSTOPS</span><br><span class="line">#if ENABLED(MAX_SOFTWARE_ENDSTOPS)</span><br><span class="line">  #define MAX_SOFTWARE_ENDSTOP_X</span><br><span class="line">  #define MAX_SOFTWARE_ENDSTOP_Y</span><br><span class="line">  #define MAX_SOFTWARE_ENDSTOP_Z</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>启用这些选项可从软件上将移动限制在机器的物理边界上 (由<code>[XYZ]_(MIN | MAX)_POS</code>设置)。例如，可以将<code>G1 Z-100</code>最小约束为<code>G1 Z0</code>。</p>
+<p>建议启用这些选项作为安全功能。你可以使用<code>M211 S0</code>禁止这些虚拟限位器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#if EITHER(MIN_SOFTWARE_ENDSTOPS, MAX_SOFTWARE_ENDSTOPS)</span><br><span class="line">  &#x2F;&#x2F;#define SOFT_ENDSTOPS_MENU_ITEM</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>也可以启用这个选项，在 LCD 去启用/禁止虚拟限位器</p>
+<h2 id="材料检测"><a href="#材料检测" class="headerlink" title="材料检测"></a>材料检测</h2><p><img src="https://marlinfw.org/assets/images/config/filament-sensor.jpg" alt="Filament Sensor"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define FILAMENT_RUNOUT_SENSOR</span><br><span class="line">#if ENABLED(FILAMENT_RUNOUT_SENSOR)</span><br><span class="line">  #define NUM_RUNOUT_SENSORS   1     &#x2F;&#x2F; Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.</span><br><span class="line">  #define FIL_RUNOUT_INVERTING false &#x2F;&#x2F; Set to true to invert the logic of the sensor.</span><br><span class="line">  #define FIL_RUNOUT_PULLUP          &#x2F;&#x2F; Use internal pullup for filament runout pins.</span><br><span class="line">  &#x2F;&#x2F;#define FIL_RUNOUT_PULLDOWN      &#x2F;&#x2F; Use internal pulldown for filament runout pins.</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; Set one or more commands to execute on filament runout.</span><br><span class="line">  &#x2F;&#x2F; (After &#39;M412 H&#39; Marlin will ask the host to handle the process.)</span><br><span class="line">  #define FILAMENT_RUNOUT_SCRIPT &quot;M600&quot;</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; After a runout is detected, continue printing this length of filament</span><br><span class="line">  &#x2F;&#x2F; before executing the runout script. Useful for a sensor at the end of</span><br><span class="line">  &#x2F;&#x2F; a feed tube. Requires 4 bytes SRAM per sensor, plus 4 bytes overhead.</span><br><span class="line">  &#x2F;&#x2F;#define FILAMENT_RUNOUT_DISTANCE_MM 25</span><br><span class="line"></span><br><span class="line">  #ifdef FILAMENT_RUNOUT_DISTANCE_MM</span><br><span class="line">    &#x2F;&#x2F; Enable this option to use an encoder disc that toggles the runout pin</span><br><span class="line">    &#x2F;&#x2F; as the filament moves. (Be sure to set FILAMENT_RUNOUT_DISTANCE_MM</span><br><span class="line">    &#x2F;&#x2F; large enough to avoid false positives.)</span><br><span class="line">    &#x2F;&#x2F;#define FILAMENT_MOTION_SENSOR</span><br><span class="line">  #endif</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>借助此功能，可以使用机械或光端挡开关来检查材料检测器中是否存在耗材 (通常在耗材的情况下，该开关是关闭的)。如果耗材用完，打印机将自动运行指定的 GCode 脚本 (默认为<code>M600</code>)。基于 RAMPS 的板使用 <code>SERVO3_PIN</code>。对于其他板，您可能需要定义 <code>FIL_RUNOUT_PIN</code>。</p>
+<h2 id="床调平"><a href="#床调平" class="headerlink" title="床调平"></a>床调平</h2><p>在许多情况下，测量床高的变化非常有用。即使3D打印机上的底座完全平整且水平，在机械上仍可能存在缺陷。例如，一台机器可能有一个非常平坦的床，但是 XY 龙门架的一小块是半毫米高。Z 轴的末端可能不完全水平。床在 X 和/或 Y 平面中移动时，床在Z平面中可能会稍微移动。而在 Delta 上，其 XY 轨迹可能呈缠绵碗状。</p>
+<p>床补偿或 “ — Bed Leveling” 使用探头或用户协助方法，可以使机器准确测量 XY 平面上各个点的 “床高度”。然后，借助这些数据，机器可以调整运动以更好地对准床的倾斜或“高度”变化。</p>
+<p>有关这些功能的更多详细信息，请参阅 <a target="_blank" rel="noopener" href="https://marlinfw.org/docs/gcode/G029-mbl.html">MBL 的 G29</a> 和 <a target="_blank" rel="noopener" href="https://marlinfw.org/docs/gcode/G029-abl.html">ABL 的 G29</a>。我们建议您在使用床架之前，尝试使打印机尽可能达到最佳状态，因为所有床架只能补偿有缺陷的硬件，但不会对它进行修复。</p>
+<h3 id="床调平类型"><a href="#床调平类型" class="headerlink" title="床调平类型"></a>床调平类型</h3><p>床调平是许多 3D 打印机的标准功能。很简单的操作可以获得良好的第一层和良好的床层附着力。所有形式的床平整都使用了<code>G29</code>床探测，<code>M420</code>启用/禁用，并且可以将其结果通过<code>M500</code>保存到 EEPROM。太棒了！</p>
+<p>启用床调平：</p>
+<ul>
+<li><code>G28</code>禁用床调平，但保持先前的平整数据不变。</li>
+<li><code>G29</code>自动或手动探测床的各个点，测量床的高度，计算校正网格或矩阵，然后打开水准补偿。具体行为取决于床整平的配置和类型。</li>
+<li><code>M500</code>将床调平数据保存到 EEPROM。使用<code>M501</code>加载它，用<code>M502</code>清除它，并使用<code>M503</code>报告它。</li>
+<li><code>M420 S &lt;bool&gt;</code>可用于启用/禁用床调平。例如，必须在<code>M501</code>之后使用<code>M420 S1</code>以启用加载的网格或矩阵，并在<code>G28</code>之后重新启用水平，这将禁用水平补偿。</li>
+<li>可以使用<code>LCD_BED_LEVELING</code>选项将 “Level Bed” 菜单项添加到 LCD。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define AUTO_BED_LEVELING_3POINT</span><br><span class="line">&#x2F;&#x2F;#define AUTO_BED_LEVELING_LINEAR</span><br><span class="line">&#x2F;&#x2F;#define AUTO_BED_LEVELING_BILINEAR</span><br><span class="line">&#x2F;&#x2F;#define AUTO_BED_LEVELING_UBL</span><br><span class="line">&#x2F;&#x2F;#define MESH_BED_LEVELING</span><br></pre></td></tr></table></figure>
+<p>只需要选择一种调平方式</p>
+<ul>
+<li><code>AUTO_BED_LEVELING_3POINT</code>，三点调平，探测三角形中的三个点。平面给出适合于补偿平坦但倾斜的床的变换矩阵。</li>
+<li><code>AUTO_BED_LEVELING_LINEAR</code>，网格调平，探测网格中的床。通过最小二乘法生成变换矩阵，以补偿平坦但倾斜的床。</li>
+<li><code>AUTO_BED_LEVELING_BILINEAR</code>，通过可选的 Catmull-Rom 曲面细分在网格中探测床。网格数据用于使用双线性插值来调整整个床层的Z高度。适用于三角床，大床或不平坦的床。</li>
+<li><code>AUTO_BED_LEVELING_UBL</code> (推荐)，结合了3点，线性，双线性和网格水准测量的功能。与双线性调平一样，UBL生成的网格数据用于使用双线性插值来调整整个床层的 Z 高度。当前需要 LCD 控制器。</li>
+<li><code>MESH_BED_LEVELING</code>提供了一个自定义<code>G29</code>命令，可使用一张纸或塞尺在几个网格点上测量床高。有关完整过程，请参阅<code>G29</code>。这种类型的调平仅与<code>PROBE_MANUALLY</code>兼容。</li>
+</ul>
+<p>只有<code>AUTO_BED_LEVELING_BILINEAR</code>和<code>AUTO_BED_LEVELING_UBL</code>支持 Delta。当前仅<code>AUTO_BED_LEVELING_BILINEAR</code>支持 SCARA。<code>MESH_BED_LEVELING</code>与 Delta 和 SCARA 不兼容。</p>
+<h3 id="G28-恢复调平数据"><a href="#G28-恢复调平数据" class="headerlink" title="G28 恢复调平数据"></a>G28 恢复调平数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define RESTORE_LEVELING_AFTER_G28</span><br></pre></td></tr></table></figure>
+<p>正常来说 G28 执行完毕后会取消调平数据的使用，你可以启用这项来让他继续使用调平数据</p>
+<h3 id="调试调平"><a href="#调试调平" class="headerlink" title="调试调平"></a>调试调平</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define DEBUG_LEVELING_FEATURE</span><br></pre></td></tr></table></figure>
+<p>使用此选项可以启用额外的归零和调平调试。然后，您可以在 <code>G28</code> 和 <code>G29 V4</code> 之前使用<code>M111 S32</code>获得详细的诊断过程日志。此选项对于找出意外行为的原因或向项目报告问题时很有用。</p>
+<h3 id="淡出调平"><a href="#淡出调平" class="headerlink" title="淡出调平"></a>淡出调平</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define ENABLE_LEVELING_FADE_HEIGHT</span><br></pre></td></tr></table></figure>
+<p>随着高度的怎加，减少床的高度补偿。</p>
+<p>此选项将 Z 参数添加到<code>M420</code>，该参数设置淡入距离，在该淡入距离中将逐渐减小调平。超过给定的 Z 高度，将不再应用调平补偿。适用于<code>MESH_BED_LEVELING</code>，<code>AUTO_BED_LEVELING_BILINEAR</code>和<code>AUTO_BED_LEVELING_UBL</code>。</p>
+<p>存在此功能是为了防止床中的不规则物体影响模型的整个高度。淡出调平还可以降低计算运算量，并降低 Z 轴在淡出高度以上的共振。对于对齐良好的机器，此功能可以改善打印效果。示例：要使调平补偿在层印刷的前10毫米处逐渐消失，请使用<code>M420 Z10</code>。如果每层的高度为 0.2mm，则每层之后的流平补偿将减少 1/50（2％) 。超过10毫米，机器将无调平补偿。</p>
+<h3 id="G26-网格验证模式"><a href="#G26-网格验证模式" class="headerlink" title="G26 网格验证模式"></a>G26 网格验证模式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Enable the G26 Mesh Validation Pattern tool.</span><br><span class="line"> *&#x2F;</span><br><span class="line">#define G26_MESH_VALIDATION   &#x2F;&#x2F; Enable G26 mesh validation</span><br><span class="line">#if ENABLED(G26_MESH_VALIDATION)</span><br><span class="line">  #define MESH_TEST_NOZZLE_SIZE     0.4   &#x2F;&#x2F; (mm) Diameter of primary nozzle.</span><br><span class="line">  #define MESH_TEST_LAYER_HEIGHT    0.2   &#x2F;&#x2F; (mm) Default layer height for the G26 Mesh Validation Tool.</span><br><span class="line">  #define MESH_TEST_HOTEND_TEMP   205   &#x2F;&#x2F; (°C) Default nozzle temperature for the G26 Mesh Validation Tool.</span><br><span class="line">  #define MESH_TEST_BED_TEMP       60   &#x2F;&#x2F; (°C) Default bed temperature for the G26 Mesh Validation Tool.</span><br><span class="line">  #define G26_XY_FEEDRATE         20    &#x2F;&#x2F; (mm&#x2F;s) Feedrate for XY Moves for the G26 Mesh Validation Tool.</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>使用任何基于网格的水平测量系统 (1.1.7) 时，可以激活<code>G26_MESH_VALIDATION</code>以打印测试图案并微调网格。有关完整详细信息，请参见 G26 网格验证。G26 命令接受用于喷嘴尺寸，层高等的参数。上面的子选项指定将应用于省略参数的默认值。</p>
+<h3 id="线性-双线性选项"><a href="#线性-双线性选项" class="headerlink" title="线性/双线性选项"></a>线性/双线性选项</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define GRID_MAX_POINTS_X 3</span><br><span class="line">#define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X</span><br></pre></td></tr></table></figure>
+<p>这些选项指定在 <code>G29</code> 期间在每个尺寸中探测的默认点数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define LEFT_PROBE_BED_POSITION MIN_PROBE_EDGE</span><br><span class="line">&#x2F;&#x2F;#define RIGHT_PROBE_BED_POSITION (X_BED_SIZE - (MIN_PROBE_EDGE))</span><br><span class="line">&#x2F;&#x2F;#define FRONT_PROBE_BED_POSITION MIN_PROBE_EDGE</span><br><span class="line">&#x2F;&#x2F;#define BACK_PROBE_BED_POSITION (Y_BED_SIZE - (MIN_PROBE_EDGE))</span><br></pre></td></tr></table></figure>
+<p>这些设置指定了使用 <code>G29</code> 进行探测的边界。这很可能是床的一个子部分，因为探头通常无法到达喷嘴可以到达的每个点。设置这些边界时，请考虑探针的 XY 偏移。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define PROBE_Y_FIRST</span><br></pre></td></tr></table></figure>
+<p>如果应该先在 Y 维度而不是 X 维度进行探测，则启用此选项。</p>
+<h3 id="双线性选项"><a href="#双线性选项" class="headerlink" title="双线性选项"></a>双线性选项</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define EXTRAPOLATE_BEYOND_GRID</span><br></pre></td></tr></table></figure>
+<p>通常，被探测的网格不会一直延伸到床的边缘。因此，在探测网格的边界之外，Z 调整可以采用以下两种方法之一。Z 高度可以通过最近的网格框的确定的倾斜度继续升高/降低 (最好是在探测了大部分床时) ，或者它可以遵循最近的边缘的轮廓 (默认值) 。启用此选项进行推断。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define ABL_BILINEAR_SUBDIVISION</span><br><span class="line">#if ENABLED(ABL_BILINEAR_SUBDIVISION)</span><br><span class="line">  &#x2F;&#x2F; Number of subdivisions between probe points</span><br><span class="line">  #define BILINEAR_SUBDIVISIONS 3</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>如果您要保留SRAM，则此选项将使用 Catmull-Rom 曲面细分方法将双线性网格的分辨率相乘。此选项仅适用于双线性调平。如果默认值 3 太昂贵，请尝试 2 或 1。在Marlin 1.1.1中，默认网格将存储在PROGMEM中，就像UBL现在所做的那样。</p>
+<h3 id="统一床平整选项"><a href="#统一床平整选项" class="headerlink" title="统一床平整选项"></a>统一床平整选项</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#define UBL_MESH_INSET 1          &#x2F;&#x2F; Mesh inset margin on print area</span><br><span class="line">#define GRID_MAX_POINTS_X 10      &#x2F;&#x2F; Don&#39;t use more than 15 points per axis, implementation limited.</span><br><span class="line">#define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X</span><br><span class="line"></span><br><span class="line">  #define UBL_MESH_EDIT_MOVES_Z     &#x2F;&#x2F; Sophisticated users prefer no movement of nozzle</span><br><span class="line">  #define UBL_SAVE_ACTIVE_ON_M500   &#x2F;&#x2F; Save the currently active mesh in the current slot on M500</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F;#define UBL_Z_RAISE_WHEN_OFF_MESH 2.5 &#x2F;&#x2F; When the nozzle is off the mesh, this value is used</span><br><span class="line">                                          &#x2F;&#x2F; as the Z-Height correction value.</span><br></pre></td></tr></table></figure>
+<p>这些选项指定用于 UBL 的插图，网格和 3 点三角形。请注意，探头的 XY 偏移和移动限制可能会限制床的可探测区域。</p>
+<h3 id="网床调平选项"><a href="#网床调平选项" class="headerlink" title="网床调平选项"></a>网床调平选项</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#define MESH_INSET 10          &#x2F;&#x2F; Mesh inset margin on print area</span><br><span class="line">#define GRID_MAX_POINTS_X 3    &#x2F;&#x2F; Don&#39;t use more than 7 points per axis, implementation limited.</span><br><span class="line">#define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;#define MESH_G28_REST_ORIGIN &#x2F;&#x2F; After homing all axes (&#39;G28&#39; or &#39;G28 XYZ&#39;) rest Z at Z_MIN_POS</span><br></pre></td></tr></table></figure>
+<p>这些选项指定在<code>G29</code>期间将始终在每个尺寸中探测的点数。网格插入用于自动计算探针边界。这些可以在<code>Configuration_adv.h</code>中显式设置。网格探测完成后，<code>MESH_G28_REST_ORIGIN</code>将喷嘴移至<code>Z_MIN_POS</code>处。如果 Z 偏移 (例如，由于home_offset或其他原因) ，则这是为了将 Z 移动到一个好的起点，通常Z = 0。</p>
+<h3 id="3-点调平"><a href="#3-点调平" class="headerlink" title="3 点调平"></a>3 点调平</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#if EITHER(AUTO_BED_LEVELING_3POINT, AUTO_BED_LEVELING_UBL)</span><br><span class="line">  &#x2F;&#x2F;#define PROBE_PT_1_X 15</span><br><span class="line">  &#x2F;&#x2F;#define PROBE_PT_1_Y 180</span><br><span class="line">  &#x2F;&#x2F;#define PROBE_PT_2_X 15</span><br><span class="line">  &#x2F;&#x2F;#define PROBE_PT_2_Y 20</span><br><span class="line">  &#x2F;&#x2F;#define PROBE_PT_3_X 170</span><br><span class="line">  &#x2F;&#x2F;#define PROBE_PT_3_Y 20</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>这些选项指定将在<code>G29</code>期间探测三个点的坐标。</p>
+<h3 id="LCD-交互式调平"><a href="#LCD-交互式调平" class="headerlink" title="LCD 交互式调平"></a>LCD 交互式调平</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define LCD_BED_LEVELING</span><br><span class="line">#if ENABLED(LCD_BED_LEVELING)</span><br><span class="line">  #define MESH_EDIT_Z_STEP  0.025 &#x2F;&#x2F; (mm) Step size while manually probing Z axis.</span><br><span class="line">  #define LCD_PROBE_Z_RANGE 4     &#x2F;&#x2F; (mm) Z Range centered on Z_MIN_POS for LCD Z adjustment</span><br><span class="line">  &#x2F;&#x2F;#define MESH_EDIT_MENU        &#x2F;&#x2F; Add a menu to edit mesh points</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p><code>LCD_BED_LEVELING</code>在 LCD 上添加了 “Level Bed” 菜单，该菜单开始了逐步指导的水平测量程序，不需要探头。对于网状床找平，对于MBL参见<code>G29</code>，对于 PROBE_MANUALLY 对于 ABL 参见<code>G29</code>。可与 MESH_BED_LEVELING 和 PROBE_MANUALLY（所有形式的自动床平整) 一起使用。请参阅<code>Configuration</code>.h文件以获取子选项。</p>
+<h3 id="角调平"><a href="#角调平" class="headerlink" title="角调平"></a>角调平</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define LEVEL_BED_CORNERS</span><br><span class="line">#if ENABLED(LEVEL_BED_CORNERS)</span><br><span class="line">  #define LEVEL_CORNERS_INSET 30    &#x2F;&#x2F; (mm) An inset for corner leveling</span><br><span class="line">  #define LEVEL_CORNERS_Z_HOP  4.0  &#x2F;&#x2F; (mm) Move nozzle up before moving between corners</span><br><span class="line">  #define LEVEL_CORNERS_HEIGHT 0.0  &#x2F;&#x2F; (mm) Z height of nozzle at leveling points</span><br><span class="line">  &#x2F;&#x2F;#define LEVEL_CENTER_TOO        &#x2F;&#x2F; Move to the center after the last corner</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>添加菜单项在床角之间移动以手动调整床。</p>
+<h3 id="Z探针结束脚本"><a href="#Z探针结束脚本" class="headerlink" title="Z探针结束脚本"></a>Z探针结束脚本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define Z_PROBE_END_SCRIPT &quot;G1 Z10 F12000\nG1 X15 Y330\nG1 Z0.5\nG1 Z10&quot;</span><br></pre></td></tr></table></figure>
+<p>在<code>G29</code>末尾执行的自定义脚本。如果需要多个命令，请用<code>\n</code> (换行符) 将它们分开。</p>
+<h2 id="归零设置"><a href="#归零设置" class="headerlink" title="归零设置"></a>归零设置</h2><h3 id="床中心设为-0-0"><a href="#床中心设为-0-0" class="headerlink" title="床中心设为 (0.0)"></a>床中心设为 (0.0)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define BED_CENTER_AT_0_0</span><br></pre></td></tr></table></figure>
+<p>如果床的中心位于X0 Y0，则启用此选项。此设置会影响自动原点位置 (未使用MANUAL_ [XYZ] _POS设置的位置) 的计算方式。Delta 始终启用它。</p>
+<h3 id="自定义归零坐标"><a href="#自定义归零坐标" class="headerlink" title="自定义归零坐标"></a>自定义归零坐标</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define MANUAL_X_HOME_POS 0</span><br><span class="line">&#x2F;&#x2F;#define MANUAL_Y_HOME_POS 0</span><br><span class="line">&#x2F;&#x2F;#define MANUAL_Z_HOME_POS 0 &#x2F;&#x2F; Distance from nozzle to printbed after homing</span><br></pre></td></tr></table></figure>
+<p>这些设置用于覆盖原始位置。保留它们未定义的自动设置。对于 Delta 的 Z 轴，必须将 home 设置在最高位置。</p>
+<h3 id="Z安全归零"><a href="#Z安全归零" class="headerlink" title="Z安全归零"></a>Z安全归零</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#define Z_SAFE_HOMING</span><br><span class="line"></span><br><span class="line">#if ENABLED(Z_SAFE_HOMING)</span><br><span class="line">  #define Z_SAFE_HOMING_X_POINT ((X_BED_SIZE) &#x2F; 2)    &#x2F;&#x2F; X point for Z homing when homing all axes (G28).</span><br><span class="line">  #define Z_SAFE_HOMING_Y_POINT ((Y_BED_SIZE) &#x2F; 2)    &#x2F;&#x2F; Y point for Z homing when homing all axes (G28).</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>当使用<code>G28</code>对所有轴进行时，Z 安全归零可以通过在 Z 归零之前移动到定义的 XY 坐标 (默认为床的中部) 来防止探针 (或喷嘴) 位于床身区域之外时 Z 归零。副作用在 Z 归零之前需要 X 和 Y 归零。如果步进驱动程序超时，将再次需要 X 和 Y 归零。</p>
+<p>如果将探针 (不是限位器) 用于 Z 归零，则启用此选项。如果使用 Z 限位器进行原点复归，则不需要 Z 安全原点复归，但是也可以启用 Z 安全原点，以使 XY 在原点复归后始终移动到某个自定义位置。</p>
+<h3 id="归零速度"><a href="#归零速度" class="headerlink" title="归零速度"></a>归零速度</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Homing speeds (mm&#x2F;m)</span><br><span class="line">#define HOMING_FEEDRATE_XY (50*60)</span><br><span class="line">#define HOMING_FEEDRATE_Z  (4*60)</span><br></pre></td></tr></table></figure>
+<p>用于归零和自动调平的归零速度。这些值可能设置为机器可以达到的最快速度。归零和探测速度受当前最大进给速度和最大加速度设置的限制。</p>
+<p>将这些值设置得太高可能会导致精度降低 和/或 跳过步骤。降低加速度可能有助于实现更高的最高速度。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define VALIDATE_HOMING_ENDSTOPS</span><br></pre></td></tr></table></figure>
+<p>验证归零是否触发了限位器。</p>
+<h3 id="床偏补偿"><a href="#床偏补偿" class="headerlink" title="床偏补偿"></a>床偏补偿</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define SKEW_CORRECTION</span><br><span class="line"></span><br><span class="line">#if ENABLED(SKEW_CORRECTION)</span><br><span class="line">  &#x2F;&#x2F; Input all length measurements here:</span><br><span class="line">  #define XY_DIAG_AC 282.8427124746</span><br><span class="line">  #define XY_DIAG_BD 282.8427124746</span><br><span class="line">  #define XY_SIDE_AD 200</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; Or, set the default skew factors directly here</span><br><span class="line">  &#x2F;&#x2F; to override the above measurements:</span><br><span class="line">  #define XY_SKEW_FACTOR 0.0</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F;#define SKEW_CORRECTION_FOR_Z</span><br><span class="line">  #if ENABLED(SKEW_CORRECTION_FOR_Z)</span><br><span class="line">    #define XZ_DIAG_AC 282.8427124746</span><br><span class="line">    #define XZ_DIAG_BD 282.8427124746</span><br><span class="line">    #define YZ_DIAG_AC 282.8427124746</span><br><span class="line">    #define YZ_DIAG_BD 282.8427124746</span><br><span class="line">    #define YZ_SIDE_AD 200</span><br><span class="line">    #define XZ_SKEW_FACTOR 0.0</span><br><span class="line">    #define YZ_SKEW_FACTOR 0.0</span><br><span class="line">  #endif</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; Enable this option for M852 to set skew at runtime</span><br><span class="line">  &#x2F;&#x2F;#define SKEW_CORRECTION_GCODE</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>纠正XYZ轴上的未对准情况。请参阅<code>configuration.h</code>中的注释。</p>
+<h3 id="单独归位"><a href="#单独归位" class="headerlink" title="单独归位"></a>单独归位</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define INDIVIDUAL_AXIS_HOMING_MENU</span><br></pre></td></tr></table></figure>
+<p>添加单个轴单独归位选项 (Home X，Home Y 和 Home Z) 到 LCD 菜单。</p>
+<h2 id="附带功能"><a href="#附带功能" class="headerlink" title="附带功能"></a>附带功能</h2><h3 id="EEPROM"><a href="#EEPROM" class="headerlink" title="EEPROM"></a>EEPROM</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define EEPROM_SETTINGS</span><br></pre></td></tr></table></figure>
+<p>诸如<code>M92</code>之类的命令仅会更改易失性存储器中的设置，并且在关闭计算机电源后这些设置会丢失。启用此选项后，设置会保存至内置的 EEPROM，在重新启动后自动加载 EEPROM 的数据，覆盖原有固件内的设置 (只是覆盖到易失性存储器，并不是真的覆盖固件)。</p>
+<p>强烈建议使用此选项，因为它使配置更易于管理。不过要注意的是更新固件后 EEPROM 的信息仍然保留。</p>
+<p>EEPROM 相关命令：</p>
+<ul>
+<li><code>M500</code>：将所有当前设置保存到 EEPROM。</li>
+<li><code>M501</code>：将最后保存的所有设置加载到 EEPROM。</li>
+<li><code>M502</code>：将所有设置重置为其默认值（由<code>Configuration.h</code>设置，也就是烧写后的默认配置）</li>
+<li><code>M503</code>：打印当前设置（在 RAM 中，而不在 EEPROM 中）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define DISABLE_M503    &#x2F;&#x2F; Saves ~2700 bytes of PROGMEM. Disable for release!</span><br><span class="line">#define EEPROM_CHITCHAT   &#x2F;&#x2F; Give feedback on EEPROM commands. Disable to save PROGMEM.</span><br></pre></td></tr></table></figure>
+<p>这些 EEPROM 选项应保留不变，但对于 128K 和更小的板，它们可用于恢复某些程序存储器。强烈建议供应商不要使用 <code>DISABLE_M503</code>。要将新的默认设置保存到 EEPROM 中，请先使用<code>M502</code>，再使用<code>M500</code>。</p>
+<p>可以更改并保存到 EEPROM 的设置用标记。标有的选项可以从 LCD 控制器更改。</p>
+<h3 id="终端保持活动"><a href="#终端保持活动" class="headerlink" title="终端保持活动"></a>终端保持活动</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#define HOST_KEEPALIVE_FEATURE        &#x2F;&#x2F; Disable this if your host doesn&#39;t like keepalive messages</span><br><span class="line">#define DEFAULT_KEEPALIVE_INTERVAL 2  &#x2F;&#x2F; Number of seconds between &quot;busy&quot; messages. Set with M113.</span><br><span class="line">#define BUSY_WHILE_HEATING            &#x2F;&#x2F; Some hosts require &quot;busy&quot; messages even during heating</span><br></pre></td></tr></table></figure>
+<p>启用后，打印机在无法接受命令时每隔几秒钟向终端发送一个忙碌状态消息。如果终端不喜欢保持活动消息，请禁用。</p>
+<p>使用 <code>DEFAULT_KEEPALIVE_INTERVAL</code>作为忙碌状态消息之间的默认秒数。用<code>M113</code>覆盖。Marlin 1.1.5及更高版本包括<code>BUSY_WHILE_HEATING</code>选项，用于对协议有要求的终端</p>
+<h3 id="查看可用内存"><a href="#查看可用内存" class="headerlink" title="查看可用内存"></a>查看可用内存</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define M100_FREE_MEMORY_WATCHER</span><br></pre></td></tr></table></figure>
+<p>启用将添加 <code>M100</code> 指令用于查看内存占用信息</p>
+<h3 id="G-code-单位转换"><a href="#G-code-单位转换" class="headerlink" title="G-code 单位转换"></a>G-code 单位转换</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define INCH_MODE_SUPPORT</span><br></pre></td></tr></table></figure>
+<p>添加 G20 和 G21，用于修改解析 G-code 的单位</p>
+<h3 id="温度单位转换"><a href="#温度单位转换" class="headerlink" title="温度单位转换"></a>温度单位转换</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define TEMPERATURE_UNITS_SUPPORT</span><br></pre></td></tr></table></figure>
+<p>添加 <code>M149 C</code>、<code>M149 K</code>和<code>M149 F</code>，用于修改温度单位为摄氏度，开氏度或华氏度。如果没有此选项，则所有温度必须以摄氏度为单位。</p>
+<h3 id="LCD-材质预设"><a href="#LCD-材质预设" class="headerlink" title="LCD 材质预设"></a>LCD 材质预设</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#define PREHEAT_1_TEMP_HOTEND 180</span><br><span class="line">#define PREHEAT_1_TEMP_BED     70</span><br><span class="line">#define PREHEAT_1_FAN_SPEED     0 &#x2F;&#x2F; Value from 0 to 255</span><br><span class="line"></span><br><span class="line">#define PREHEAT_2_TEMP_HOTEND 240</span><br><span class="line">#define PREHEAT_2_TEMP_BED    110</span><br><span class="line">#define PREHEAT_2_FAN_SPEED     0 &#x2F;&#x2F; Value from 0 to 255</span><br></pre></td></tr></table></figure>
+<p>这些是 Prepare &gt; Preheat 菜单选项的默认值。可以使用<code>M145</code>或 Control &gt; Temperature &gt; Preheat Material X conf 子菜单覆盖这些值。</p>
+<h3 id="空转喷头位置"><a href="#空转喷头位置" class="headerlink" title="空转喷头位置"></a>空转喷头位置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define NOZZLE_PARK_FEATURE</span><br><span class="line">#if ENABLED(NOZZLE_PARK_FEATURE)</span><br><span class="line">  &#x2F;&#x2F; Specify a park position as &#123; X, Y, Z_raise &#125;</span><br><span class="line">  #define NOZZLE_PARK_POINT &#123; (X_MIN_POS + 10), (Y_MAX_POS - 10), 20 &#125;</span><br><span class="line">  #define NOZZLE_PARK_XY_FEEDRATE 100   &#x2F;&#x2F; (mm&#x2F;s) X and Y axes feedrate (also used for delta Z axis)</span><br><span class="line">  #define NOZZLE_PARK_Z_FEEDRATE 5      &#x2F;&#x2F; (mm&#x2F;s) Z axis feedrate (not used for delta printers)</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>设置空转时喷头所在的位置，并启用 G27</p>
+<h3 id="喷头清理"><a href="#喷头清理" class="headerlink" title="喷头清理"></a>喷头清理</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define NOZZLE_CLEAN_FEATURE</span><br><span class="line">#if ENABLED(NOZZLE_CLEAN_FEATURE)</span><br><span class="line">  ...</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>添加了 G12 命令以执行喷嘴清洁过程。有关其他配置选项，请参见<code>Configuration.h</code>里的注释。</p>
+<h3 id="打印时间计时器"><a href="#打印时间计时器" class="headerlink" title="打印时间计时器"></a>打印时间计时器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define PRINTJOB_TIMER_AUTOSTART</span><br></pre></td></tr></table></figure>
+<p>使用 <code>M104</code>，<code>M109</code> 和 <code>M190</code> 命令时，自动启动和停止打印作业计时器。还添加以下命令来控制计时器：</p>
+<ul>
+<li><code>M75</code> 启动打印作业计时器。</li>
+<li><code>M76</code> 暂停打印作业计时器。</li>
+<li><code>M77</code> 停止打印作业计时器。</li>
+</ul>
+<h3 id="打印统计"><a href="#打印统计" class="headerlink" title="打印统计"></a>打印统计</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define PRINTCOUNTER</span><br></pre></td></tr></table></figure>
+<p>统计打印总数、成功/失败数、总打印时间，可以使用 <code>M78</code> 查看这些信息</p>
+<h2 id="LCD-语言"><a href="#LCD-语言" class="headerlink" title="LCD 语言"></a>LCD 语言</h2><h3 id="界面语言"><a href="#界面语言" class="headerlink" title="界面语言"></a>界面语言</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define LCD_LANGUAGE en</span><br></pre></td></tr></table></figure>
+<p>选择界面语言，最新支持的语言可以在 src/core/language.h 找到</p>
+<h3 id="HD44780字符集"><a href="#HD44780字符集" class="headerlink" title="HD44780字符集"></a>HD44780字符集</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define DISPLAY_CHARSET_HD44780 JAPANESE</span><br></pre></td></tr></table></figure>
+<p>此选项仅适用于基于字符的显示。有需要细看<code>Configuration.h</code>中的注释</p>
+<h2 id="LCD-类型"><a href="#LCD-类型" class="headerlink" title="LCD 类型"></a>LCD 类型</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define ULTRA_LCD &#x2F;&#x2F; Character based</span><br><span class="line">&#x2F;&#x2F;#define DOGLCD    &#x2F;&#x2F; Full graphics display</span><br></pre></td></tr></table></figure>
+<p>基本的LCD类型是基于字符的或图形的。一般 Marlin 会自动选择支持的 LCD 类型。如果你的 LCD 支持，需要选择性启用这些选项。</p>
+<h3 id="SD-卡"><a href="#SD-卡" class="headerlink" title="SD 卡"></a>SD 卡</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define SDSUPPORT &#x2F;&#x2F; Enable SD Card Support in Hardware Console</span><br></pre></td></tr></table></figure>
+<p>如果你要使用 SD 卡离线打印，必须启用这项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define SPI_SPEED SPI_HALF_SPEED</span><br><span class="line">&#x2F;&#x2F;#define SPI_SPEED SPI_QUARTER_SPEED</span><br><span class="line">&#x2F;&#x2F;#define SPI_SPEED SPI_EIGHTH_SPEED</span><br></pre></td></tr></table></figure>
+<p>取消注释这些选项之一可使用较慢的 SPI 传输速度。这样做一般能解决卷初始化错误问题。</p>
+<h3 id="CRC-启用"><a href="#CRC-启用" class="headerlink" title="CRC 启用"></a>CRC 启用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define SD_CHECK_AND_RETRY</span><br></pre></td></tr></table></figure>
+<p>SD 卡通信过程使用 CRC 检查</p>
+<h2 id="旋钮"><a href="#旋钮" class="headerlink" title="旋钮"></a>旋钮</h2><h3 id="分辨率"><a href="#分辨率" class="headerlink" title="分辨率"></a>分辨率</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define ENCODER_PULSES_PER_STEP 1</span><br></pre></td></tr></table></figure>
+<p>识别一个步骤所需要旋钮发出的脉冲数。对于高分辨率旋钮应增加。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define ENCODER_STEPS_PER_MENU_ITEM 5</span><br></pre></td></tr></table></figure>
+<p>使用此选项可覆盖在下一个/上一个菜单项之间移动所需的步进信号数。</p>
+<h3 id="方向"><a href="#方向" class="headerlink" title="方向"></a>方向</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define REVERSE_ENCODER_DIRECTION</span><br><span class="line">&#x2F;&#x2F;#define REVERSE_MENU_DIRECTION</span><br></pre></td></tr></table></figure>
+<p>测试旋钮方向，你可以先把两个都注释掉，烧写后出现问题的解决方式：</p>
+<ul>
+<li>菜单和数值修改都反了，启用<code>REVERSE_ENCODER_DIRECTION</code></li>
+<li>只有菜单反了，启用<code>REVERSE_MENU_DIRECTION</code></li>
+<li>只有数值修改反了，两个都启用</li>
+</ul>
+<h2 id="蜂鸣器"><a href="#蜂鸣器" class="headerlink" title="蜂鸣器"></a>蜂鸣器</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define SPEAKER</span><br></pre></td></tr></table></figure>
+<p>默认使用的蜂鸣器是固定音阶，如果你的蜂鸣器可以发出不同的音阶，则启用这项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 100</span><br><span class="line">&#x2F;&#x2F;#define LCD_FEEDBACK_FREQUENCY_HZ 1000</span><br></pre></td></tr></table></figure>
+<p>声音的持续时间和频率。将它们设置为 0 可禁用 LCD 菜单中的音频反馈。使用 <code>M300</code> 测试音频输出 S &lt;频率Hz&gt; P &lt;持续时间ms&gt;</p>
+<h2 id="LCD-控制面板"><a href="#LCD-控制面板" class="headerlink" title="LCD 控制面板"></a>LCD 控制面板</h2><p>Marlin支持对多种控制界面。有两个最受欢迎的 LCD 界面：</p>
+<p><img src="https://marlinfw.org/assets/images/config/controllers.png" alt="LCD Controllers"></p>
+<p><code>REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER</code>带点击轮的单色基于128 x 64像素的LCD控制器。能够显示简单的位图图形和最多5行文本 (上半图)。</p>
+<p><code>REPRAP_DISCOUNT_SMART_CONTROLLER</code>一个20 x 4字符的LCD控制器，带有拨轮 (下半图)。</p>
+<p>其他 LCD 控制器大多数都是这些的改进版本。其他类型可以参考官方：</p>
+<p><a target="_blank" rel="noopener" href="https://marlinfw.org/docs/configuration/configuration.html#character-lcds">字符</a> / <a target="_blank" rel="noopener" href="https://marlinfw.org/docs/configuration/configuration.html#graphical-lcds">图形</a> LCD</p>
+<p><a target="_blank" rel="noopener" href="https://marlinfw.org/docs/configuration/configuration.html#keypads">按键矩阵</a></p>
+<p>I2C <a target="_blank" rel="noopener" href="https://marlinfw.org/docs/configuration/configuration.html#i2c-character-lcds">字符</a> / <a target="_blank" rel="noopener" href="https://marlinfw.org/docs/configuration/configuration.html#i2c-graphical-lcds">图形</a> LCD</p>
+<h2 id="额外功能"><a href="#额外功能" class="headerlink" title="额外功能"></a>额外功能</h2><h3 id="快速-PWM-风扇"><a href="#快速-PWM-风扇" class="headerlink" title="快速 PWM 风扇"></a>快速 PWM 风扇</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define FAST_PWM_FAN</span><br></pre></td></tr></table></figure>
+<p>增加风扇 PWM 频率。可以在<code>configuration_adv.h</code>文件中调整频率和缩放比例。</p>
+<h3 id="使用软件-PWM-驱动风扇"><a href="#使用软件-PWM-驱动风扇" class="headerlink" title="使用软件 PWM 驱动风扇"></a>使用软件 PWM 驱动风扇</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define FAN_SOFT_PWM</span><br><span class="line">#define SOFT_PWM_SCALE 0</span><br><span class="line">&#x2F;&#x2F;#define SOFT_PWM_DITHER</span><br></pre></td></tr></table></figure>
+<p>使用软件 PWM 驱动风扇。这使用了非常低的频率。如果频率太低，请增加<code>SOFT_PWM_SCALE</code>。如果在<code>SOFT_PWM_SCALE</code>设置为大于 0 的值时遇到分辨率损失，则可以使用<code>SOFT_PWM_DITHER</code>减轻它。</p>
+<h3 id="温度状态指示灯"><a href="#温度状态指示灯" class="headerlink" title="温度状态指示灯"></a>温度状态指示灯</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define TEMP_STAT_LEDS</span><br></pre></td></tr></table></figure>
+<p>使用 LED 添加温度状态指示器。</p>
+<h3 id="快门引脚"><a href="#快门引脚" class="headerlink" title="快门引脚"></a>快门引脚</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define PHOTOGRAPH_PIN     23</span><br></pre></td></tr></table></figure>
+<p>使用<code>M240</code>来拍照，而这个引脚用来触发相机的快门</p>
+<h3 id="SkeinForge-圆弧错误修复"><a href="#SkeinForge-圆弧错误修复" class="headerlink" title="SkeinForge 圆弧错误修复"></a>SkeinForge 圆弧错误修复</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define SF_ARC_FIX</span><br></pre></td></tr></table></figure>
+<p>当使用 Arc Point 作为圆角过程时，用 SkeinForge 切片的文件包含错误的弧 G-Code。此选项可解决该错误，但应保留该选项。</p>
+<h3 id="糊状挤出"><a href="#糊状挤出" class="headerlink" title="糊状挤出"></a>糊状挤出</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Support for the BariCUDA Paste Extruder.</span><br><span class="line">&#x2F;&#x2F;#define BARICUDA</span><br></pre></td></tr></table></figure>
+<p>Marlin包括对 Baricuda Extruder 的支持，该 Baricuda Extruder 也托管在<a target="_blank" rel="noopener" href="https://github.com/jmil/BariCUDA">GitHub</a>上，用于3D打印糖和巧克力。该功能添加了代码<code>M126</code>，<code>M127</code>，<code>M128</code>和<code>M129</code>，用于控制 Baricuda 的泵和阀门。</p>
+<h3 id="RGB-颜色-LED-加成-滑稽"><a href="#RGB-颜色-LED-加成-滑稽" class="headerlink" title="RGB 颜色 LED 加成[滑稽]"></a>RGB 颜色 LED 加成[滑稽]</h3><p>RGB 可寻址颜色指示器有两种方法在，这两种方法都使用<code>M150 Rr Ug Bb</code>设置颜色以指定 0 到 255 之间的 RGB 分量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;define BlinkM&#x2F;CyzRgb Support</span><br><span class="line">&#x2F;&#x2F;#define BLINKM</span><br></pre></td></tr></table></figure>
+<p>BLINKM 为某些 LCD 控制器提供背光。使用 I2C 消息设置其颜色。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;define PCA9632 PWM LED driver Support</span><br><span class="line">&#x2F;&#x2F;#define PCA9632</span><br></pre></td></tr></table></figure>
+<p>飞利浦 PCA9632 是通用 PWM LED 驱动器，使用 I2C 控制（BlinkM）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define RGB_LED</span><br><span class="line">&#x2F;&#x2F;#define RGBW_LED</span><br><span class="line">#if ENABLED(RGB_LED) || ENABLED(RGBW_LED)</span><br><span class="line">  #define RGB_LED_R_PIN 34</span><br><span class="line">  #define RGB_LED_G_PIN 43</span><br><span class="line">  #define RGB_LED_B_PIN 35</span><br><span class="line">  #define RGB_LED_W_PIN -1</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>连接到 5V 数字引脚的 RGB（W）LED ，或连接到由数字引脚控制的 MOSFETs RGB（W） 灯条，需要启用这项。</p>
+<p>通过为每个组件分配数字引脚，可以简单地使用 RGB LED。如果这些引脚能够执行硬件 PWM，则可以使用多种颜色。如果使用简单的数字引脚，则只能使用 7 种颜色。添加了<code>M150</code>命令以设置LED（或LED灯带）颜色。如果引脚具有 PWM 功能（例如4、5、6、11），则可以将亮度值的范围设置为 0 至 255。</p>
+<h3 id="Adafruit-Neopixel-LED-驱动器"><a href="#Adafruit-Neopixel-LED-驱动器" class="headerlink" title="Adafruit Neopixel LED 驱动器"></a>Adafruit Neopixel LED 驱动器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define NEOPIXEL_LED</span><br><span class="line">#if ENABLED(NEOPIXEL_LED)</span><br><span class="line">  #define NEOPIXEL_TYPE   NEO_GRBW &#x2F;&#x2F; NEO_GRBW &#x2F; NEO_GRB - four&#x2F;three channel driver type (defined in Adafruit_NeoPixel.h)</span><br><span class="line">  #define NEOPIXEL_PIN     4       &#x2F;&#x2F; LED driving pin</span><br><span class="line">  &#x2F;&#x2F;#define NEOPIXEL2_TYPE NEOPIXEL_TYPE</span><br><span class="line">  &#x2F;&#x2F;#define NEOPIXEL2_PIN    5</span><br><span class="line">  #define NEOPIXEL_PIXELS 30       &#x2F;&#x2F; Number of LEDs in the strip, larger of 2 strips if 2 neopixel strips are used</span><br><span class="line">  #define NEOPIXEL_IS_SEQUENTIAL   &#x2F;&#x2F; Sequential display for temperature change - LED by LED. Disable to change all LEDs at once.</span><br><span class="line">  #define NEOPIXEL_BRIGHTNESS 127  &#x2F;&#x2F; Initial brightness (0-255)</span><br><span class="line">  &#x2F;&#x2F;#define NEOPIXEL_STARTUP_TEST  &#x2F;&#x2F; Cycle through colors at startup</span><br><span class="line">  &#x2F;&#x2F;#define NEOPIXEL_BKGD_LED_INDEX  0               &#x2F;&#x2F; Index of the LED to use</span><br><span class="line">  &#x2F;&#x2F;#define NEOPIXEL_BKGD_COLOR &#123; 255, 255, 255, 0 &#125; &#x2F;&#x2F; R, G, B, W</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://www.adafruit.com/category/168">NEOPIXELS</a> (官方就是这么懒)</p>
+<h3 id="根据打印机状态控制-LED"><a href="#根据打印机状态控制-LED" class="headerlink" title="根据打印机状态控制 LED"></a>根据打印机状态控制 LED</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#if ENABLED(BLINKM) || ENABLED(RGB_LED) || ENABLED(RGBW_LED) || ENABLED(PCA9632)</span><br><span class="line">  #define PRINTER_EVENT_LEDS</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>此选项使打印机对安装的彩色LED，BLINKM 或 PCA9632 提供状态反馈：</p>
+<p>随着加热床达到目标温度，逐渐从蓝色变为紫色。</p>
+<p>随着温度升高，紫罗兰色逐渐变为红色。</p>
+<p>更改为白色以照亮工作表面。</p>
+<p>打印完成后变为绿色。</p>
+<p>打印完成并且用户按下按钮后关闭。</p>
+<h3 id="舵机"><a href="#舵机" class="headerlink" title="舵机"></a>舵机</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define NUM_SERVOS 3 &#x2F;&#x2F; Servo index starts with 0 for M280 command</span><br></pre></td></tr></table></figure>
+<p>可使用舵机的数量。一般出现在 Z 床探头，它由安装在旋转臂上的限位器组成。要将伺服连接器之一用于此类探头，请在上述探头选项中设置 Z_ENDSTOP_SERVO_NR。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define SERVO_DELAY 300</span><br></pre></td></tr></table></figure>
+<p>下一个动作开始之前的延迟（mm为单位），以使伺服时间达到其目标角度。300ms是一个不错的选择，但是您可以尝试减少延迟。指定足够大的延迟，以便伺服器有足够的时间在停用之前完成完整的运动。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;#define DEACTIVATE_SERVOS_AFTER_MOVE</span><br></pre></td></tr></table></figure>
+<p>启用这项舵机仅在运动期间供电，防止抖动。我们建议启用此选项，以防止有源舵机产生的电子噪声干扰其他组件。运动过程中，挤出机电机接线产生的高安培数也会在主动伺服系统中引起波动。将此选项保持启用状态可以避免与伺服相关的麻烦。</p>
+<h1 id="Configuration-adv-h"><a href="#Configuration-adv-h" class="headerlink" title="Configuration_adv.h"></a>Configuration_adv.h</h1><p>突然咸鱼</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/3D%E6%89%93%E5%8D%B0/" rel="tag"># 3D打印</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/23/hexo%20+%20Github%20%E6%90%AD%E5%BB%BA%E7%AC%94%E8%AE%B0/" rel="next" title="hexo + Github 搭建笔记">
+      hexo + Github 搭建笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E7%9A%84%E5%BC%80%E5%A7%8B"><span class="nav-number">1.</span> <span class="nav-text">开始的开始</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95"><span class="nav-number">2.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Configuration-%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">Configuration 文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6"><span class="nav-number">3.1.</span> <span class="nav-text">版本控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BA%E4%BB%B6%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="nav-number">3.2.</span> <span class="nav-text">固件基本信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="nav-number">3.3.</span> <span class="nav-text">硬件基本信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B2%E8%A1%8C%E7%AB%AF%E5%8F%A3"><span class="nav-number">3.3.1.</span> <span class="nav-text">串行端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A2%E7%89%B9%E7%8E%87%E4%B8%8E%E8%93%9D%E7%89%99"><span class="nav-number">3.3.2.</span> <span class="nav-text">波特率与蓝牙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E6%9D%BF"><span class="nav-number">3.3.3.</span> <span class="nav-text">控制板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8D%B0%E6%9C%BA%E5%91%BD%E5%90%8D"><span class="nav-number">3.3.4.</span> <span class="nav-text">打印机命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8D%B0%E6%9C%BA-UUID"><span class="nav-number">3.3.5.</span> <span class="nav-text">打印机 UUID</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%A4%E5%87%BA%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="nav-number">3.4.</span> <span class="nav-text">挤出基本信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%A4%E5%87%BA%E6%9C%BA%E6%95%B0%E9%87%8F"><span class="nav-number">3.4.1.</span> <span class="nav-text">挤出机数量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%86%E4%B8%9D%E7%9B%B4%E5%BE%84"><span class="nav-number">3.4.2.</span> <span class="nav-text">细丝直径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E6%9D%90%E6%96%99%E6%8C%A4%E5%87%BA"><span class="nav-number">3.4.3.</span> <span class="nav-text">多路材料挤出</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95%E5%96%B7%E5%A4%B4%E5%A4%9A%E6%8C%A4%E5%87%BA"><span class="nav-number">3.4.3.1.</span> <span class="nav-text">单喷头多挤出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Prusa-MMU2-%E6%8C%A4%E5%87%BA%E8%A3%85%E7%BD%AE"><span class="nav-number">3.4.3.2.</span> <span class="nav-text">Prusa MMU2 挤出装置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95%E5%96%B7%E5%A4%B4%E5%8D%95%E6%8C%A4%E5%87%BA%E6%9C%BA"><span class="nav-number">3.4.3.3.</span> <span class="nav-text">单喷头单挤出机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E5%96%B7%E5%A4%B4%E5%8F%8C%E6%8C%A4%E5%87%BA%E7%94%B5%E6%9C%BA%E5%88%87%E6%8D%A2%E8%A3%85%E7%BD%AE"><span class="nav-number">3.4.3.4.</span> <span class="nav-text">双喷头双挤出电机切换装置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#X%E8%BD%B4%E7%8B%AC%E7%AB%8B%E6%94%AF%E6%9E%B6%E5%96%B7%E5%A4%B4%E9%80%89%E6%8B%A9%E8%A3%85%E7%BD%AE"><span class="nav-number">3.4.3.5.</span> <span class="nav-text">X轴独立支架喷头选择装置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%96%B7%E5%A4%B4%E5%AF%B9%E6%8E%A5%E4%BA%A4%E6%8D%A2%E8%A3%85%E7%BD%AE"><span class="nav-number">3.4.3.6.</span> <span class="nav-text">喷头对接交换装置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95%E5%96%B7%E5%A4%B4%E6%B7%B7%E5%90%88%E6%8C%A4%E5%87%BA"><span class="nav-number">3.4.3.7.</span> <span class="nav-text">单喷头混合挤出</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%96%B7%E5%A4%B4%E5%81%8F%E7%A7%BB"><span class="nav-number">3.4.4.</span> <span class="nav-text">喷头偏移</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%B5%E6%BA%90%E8%AE%BE%E5%AE%9A"><span class="nav-number">3.5.</span> <span class="nav-text">电源设定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%A9%E5%BA%A6%E6%8E%A7%E5%88%B6%E8%AE%BE%E5%AE%9A"><span class="nav-number">3.6.</span> <span class="nav-text">温度控制设定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%A9%E5%BA%A6%E4%BC%A0%E6%84%9F%E5%99%A8%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.6.1.</span> <span class="nav-text">温度传感器类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%A9%E5%BA%A6%E7%A8%B3%E5%AE%9A%E8%AE%BE%E5%AE%9A"><span class="nav-number">3.6.2.</span> <span class="nav-text">温度稳定设定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%A9%E5%BA%A6%E8%8C%83%E5%9B%B4"><span class="nav-number">3.6.3.</span> <span class="nav-text">温度范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PID"><span class="nav-number">3.6.4.</span> <span class="nav-text">PID</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%83%AD%E7%AB%AF"><span class="nav-number">3.6.4.1.</span> <span class="nav-text">热端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%83%AD%E5%BA%8A"><span class="nav-number">3.6.4.2.</span> <span class="nav-text">热床</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E7%9B%B8%E5%85%B3"><span class="nav-number">3.6.5.</span> <span class="nav-text">安全相关</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A6%81%E6%AD%A2%E5%86%B7%E6%8C%A4%E5%87%BA"><span class="nav-number">3.6.5.1.</span> <span class="nav-text">禁止冷挤出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A6%81%E6%AD%A2%E9%95%BF%E6%8C%A4%E5%87%BA"><span class="nav-number">3.6.5.2.</span> <span class="nav-text">禁止长挤出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B8%A9%E5%BA%A6%E4%BF%9D%E6%8A%A4"><span class="nav-number">3.6.5.3.</span> <span class="nav-text">温度保护</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E5%8A%A8%E7%B3%BB%E7%BB%9F"><span class="nav-number">3.7.</span> <span class="nav-text">运动系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Delta%E7%89%B9%E6%AE%8A%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.8.</span> <span class="nav-text">Delta特殊设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%90%E4%BD%8D%E5%99%A8"><span class="nav-number">3.9.</span> <span class="nav-text">限位器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E8%BF%9B%E7%94%B5%E6%9C%BA%E9%A9%B1%E5%8A%A8"><span class="nav-number">3.10.</span> <span class="nav-text">步进电机驱动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%A4%E5%87%BA%E6%9C%BA%E5%8F%82%E6%95%B0"><span class="nav-number">3.10.1.</span> <span class="nav-text">自定义挤出机参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E8%BF%9B%E7%94%B5%E6%9C%BA%E6%AF%8F%E6%AF%AB%E7%B1%B3%E6%AD%A5%E6%95%B0"><span class="nav-number">3.10.2.</span> <span class="nav-text">步进电机每毫米步数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E8%BF%9B%E7%94%B5%E6%9C%BA%E6%9C%80%E9%AB%98%E9%80%9F%E5%BA%A6"><span class="nav-number">3.10.3.</span> <span class="nav-text">步进电机最高速度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E5%8A%A0%E9%80%9F%E5%BA%A6"><span class="nav-number">3.10.4.</span> <span class="nav-text">最大加速度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E5%8A%A0%E9%80%9F%E5%BA%A6"><span class="nav-number">3.10.5.</span> <span class="nav-text">默认加速度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E7%82%B9%E5%81%8F%E5%B7%AE"><span class="nav-number">3.10.6.</span> <span class="nav-text">结点偏差</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E9%80%9F%E6%8A%96%E5%8A%A8"><span class="nav-number">3.10.7.</span> <span class="nav-text">加速抖动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#S-%E6%9B%B2%E7%BA%BF%E5%8A%A0%E9%80%9F"><span class="nav-number">3.10.8.</span> <span class="nav-text">S 曲线加速</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Z-%E6%8E%A2%E9%92%88"><span class="nav-number">3.11.</span> <span class="nav-text">Z 探针</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A2%E5%A4%B4%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.11.1.</span> <span class="nav-text">探头类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E4%BD%BF%E7%94%A8"><span class="nav-number">3.11.1.1.</span> <span class="nav-text">无使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%BA%E5%AE%9A%E5%BC%8F"><span class="nav-number">3.11.1.2.</span> <span class="nav-text">固定式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%88%B5%E6%9C%BA%E9%A9%B1%E5%8A%A8%E5%BC%8F"><span class="nav-number">3.11.1.3.</span> <span class="nav-text">舵机驱动式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BLTouch"><span class="nav-number">3.11.1.4.</span> <span class="nav-text">BLTouch</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TOUCH-MI"><span class="nav-number">3.11.1.5.</span> <span class="nav-text">TOUCH MI</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%B5%E7%A3%81%E5%BC%8F"><span class="nav-number">3.11.1.6.</span> <span class="nav-text">电磁式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%A6%BB%E5%BC%8F"><span class="nav-number">3.11.1.7.</span> <span class="nav-text">分离式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%BA%E6%A2%B0%E5%BC%8F"><span class="nav-number">3.11.1.8.</span> <span class="nav-text">机械式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E5%85%AD%E8%A7%92%E6%89%B3%E6%89%8B%E5%BC%8F"><span class="nav-number">3.11.1.9.</span> <span class="nav-text">内六角扳手式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A2%E5%A4%B4%E5%81%8F%E7%A7%BB"><span class="nav-number">3.11.2.</span> <span class="nav-text">探头偏移</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%9D%E8%BE%B9%E7%BC%98%E7%9A%84%E8%B7%9D%E7%A6%BB"><span class="nav-number">3.11.3.</span> <span class="nav-text">距边缘的距离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A2%E6%B5%8B%E9%80%9F%E5%BA%A6"><span class="nav-number">3.11.4.</span> <span class="nav-text">探测速度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E4%B8%AA%E6%8E%A2%E9%92%88"><span class="nav-number">3.11.5.</span> <span class="nav-text">多个探针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A2%E9%92%88%E5%AE%89%E5%85%A8%E5%8C%BA"><span class="nav-number">3.11.6.</span> <span class="nav-text">探针安全区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%8E%A2%E9%92%88"><span class="nav-number">3.11.7.</span> <span class="nav-text">测试探针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E5%8A%A0%E7%83%AD%E5%99%A8%E6%89%8D%E6%8E%A2%E6%B5%8B"><span class="nav-number">3.11.8.</span> <span class="nav-text">关闭加热器才探测</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E8%BF%9B%E7%94%B5%E6%9C%BA%E5%9F%BA%E6%9C%AC%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.12.</span> <span class="nav-text">步进电机基本设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B5%E6%9C%BA%E4%BD%BF%E8%83%BD%E7%94%B5%E5%B9%B3"><span class="nav-number">3.12.1.</span> <span class="nav-text">电机使能电平</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E8%BF%90%E5%8A%A8%E7%8A%B6%E6%80%81%E5%85%B3%E7%94%B5%E6%9C%BA"><span class="nav-number">3.12.2.</span> <span class="nav-text">非运动状态关电机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B5%E6%9C%BA%E6%96%B9%E5%90%91"><span class="nav-number">3.12.3.</span> <span class="nav-text">电机方向</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%92%E9%9B%B6%E5%92%8C%E5%AE%89%E5%85%A8%E5%8C%BA"><span class="nav-number">3.13.</span> <span class="nav-text">归零和安全区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Z-%E8%BD%B4%E5%BD%92%E9%9B%B6%E5%90%8E%E7%9A%84%E9%AB%98%E5%BA%A6"><span class="nav-number">3.13.1.</span> <span class="nav-text">Z 轴归零后的高度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%92%E9%9B%B6%E6%96%B9%E5%90%91"><span class="nav-number">3.13.2.</span> <span class="nav-text">归零方向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E5%8C%BA%E5%A4%A7%E5%B0%8F"><span class="nav-number">3.13.3.</span> <span class="nav-text">安全区大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E9%99%90%E4%BD%8D%E5%99%A8-%E8%BD%AF%E4%BB%B6%E9%99%90%E4%BD%8D%E5%99%A8"><span class="nav-number">3.13.4.</span> <span class="nav-text">虚拟限位器 (软件限位器)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%90%E6%96%99%E6%A3%80%E6%B5%8B"><span class="nav-number">3.14.</span> <span class="nav-text">材料检测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%8A%E8%B0%83%E5%B9%B3"><span class="nav-number">3.15.</span> <span class="nav-text">床调平</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%8A%E8%B0%83%E5%B9%B3%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.15.1.</span> <span class="nav-text">床调平类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#G28-%E6%81%A2%E5%A4%8D%E8%B0%83%E5%B9%B3%E6%95%B0%E6%8D%AE"><span class="nav-number">3.15.2.</span> <span class="nav-text">G28 恢复调平数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E8%B0%83%E5%B9%B3"><span class="nav-number">3.15.3.</span> <span class="nav-text">调试调平</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%A1%E5%87%BA%E8%B0%83%E5%B9%B3"><span class="nav-number">3.15.4.</span> <span class="nav-text">淡出调平</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#G26-%E7%BD%91%E6%A0%BC%E9%AA%8C%E8%AF%81%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.15.5.</span> <span class="nav-text">G26 网格验证模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7-%E5%8F%8C%E7%BA%BF%E6%80%A7%E9%80%89%E9%A1%B9"><span class="nav-number">3.15.6.</span> <span class="nav-text">线性&#x2F;双线性选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E7%BA%BF%E6%80%A7%E9%80%89%E9%A1%B9"><span class="nav-number">3.15.7.</span> <span class="nav-text">双线性选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%9F%E4%B8%80%E5%BA%8A%E5%B9%B3%E6%95%B4%E9%80%89%E9%A1%B9"><span class="nav-number">3.15.8.</span> <span class="nav-text">统一床平整选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E5%BA%8A%E8%B0%83%E5%B9%B3%E9%80%89%E9%A1%B9"><span class="nav-number">3.15.9.</span> <span class="nav-text">网床调平选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%82%B9%E8%B0%83%E5%B9%B3"><span class="nav-number">3.15.10.</span> <span class="nav-text">3 点调平</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LCD-%E4%BA%A4%E4%BA%92%E5%BC%8F%E8%B0%83%E5%B9%B3"><span class="nav-number">3.15.11.</span> <span class="nav-text">LCD 交互式调平</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%92%E8%B0%83%E5%B9%B3"><span class="nav-number">3.15.12.</span> <span class="nav-text">角调平</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Z%E6%8E%A2%E9%92%88%E7%BB%93%E6%9D%9F%E8%84%9A%E6%9C%AC"><span class="nav-number">3.15.13.</span> <span class="nav-text">Z探针结束脚本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%92%E9%9B%B6%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.16.</span> <span class="nav-text">归零设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%8A%E4%B8%AD%E5%BF%83%E8%AE%BE%E4%B8%BA-0-0"><span class="nav-number">3.16.1.</span> <span class="nav-text">床中心设为 (0.0)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BD%92%E9%9B%B6%E5%9D%90%E6%A0%87"><span class="nav-number">3.16.2.</span> <span class="nav-text">自定义归零坐标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Z%E5%AE%89%E5%85%A8%E5%BD%92%E9%9B%B6"><span class="nav-number">3.16.3.</span> <span class="nav-text">Z安全归零</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%92%E9%9B%B6%E9%80%9F%E5%BA%A6"><span class="nav-number">3.16.4.</span> <span class="nav-text">归零速度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%8A%E5%81%8F%E8%A1%A5%E5%81%BF"><span class="nav-number">3.16.5.</span> <span class="nav-text">床偏补偿</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E7%8B%AC%E5%BD%92%E4%BD%8D"><span class="nav-number">3.16.6.</span> <span class="nav-text">单独归位</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%B8%A6%E5%8A%9F%E8%83%BD"><span class="nav-number">3.17.</span> <span class="nav-text">附带功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EEPROM"><span class="nav-number">3.17.1.</span> <span class="nav-text">EEPROM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%88%E7%AB%AF%E4%BF%9D%E6%8C%81%E6%B4%BB%E5%8A%A8"><span class="nav-number">3.17.2.</span> <span class="nav-text">终端保持活动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%8F%AF%E7%94%A8%E5%86%85%E5%AD%98"><span class="nav-number">3.17.3.</span> <span class="nav-text">查看可用内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#G-code-%E5%8D%95%E4%BD%8D%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.17.4.</span> <span class="nav-text">G-code 单位转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%A9%E5%BA%A6%E5%8D%95%E4%BD%8D%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.17.5.</span> <span class="nav-text">温度单位转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LCD-%E6%9D%90%E8%B4%A8%E9%A2%84%E8%AE%BE"><span class="nav-number">3.17.6.</span> <span class="nav-text">LCD 材质预设</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A9%BA%E8%BD%AC%E5%96%B7%E5%A4%B4%E4%BD%8D%E7%BD%AE"><span class="nav-number">3.17.7.</span> <span class="nav-text">空转喷头位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%96%B7%E5%A4%B4%E6%B8%85%E7%90%86"><span class="nav-number">3.17.8.</span> <span class="nav-text">喷头清理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8D%B0%E6%97%B6%E9%97%B4%E8%AE%A1%E6%97%B6%E5%99%A8"><span class="nav-number">3.17.9.</span> <span class="nav-text">打印时间计时器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8D%B0%E7%BB%9F%E8%AE%A1"><span class="nav-number">3.17.10.</span> <span class="nav-text">打印统计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LCD-%E8%AF%AD%E8%A8%80"><span class="nav-number">3.18.</span> <span class="nav-text">LCD 语言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%95%8C%E9%9D%A2%E8%AF%AD%E8%A8%80"><span class="nav-number">3.18.1.</span> <span class="nav-text">界面语言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HD44780%E5%AD%97%E7%AC%A6%E9%9B%86"><span class="nav-number">3.18.2.</span> <span class="nav-text">HD44780字符集</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LCD-%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.19.</span> <span class="nav-text">LCD 类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SD-%E5%8D%A1"><span class="nav-number">3.19.1.</span> <span class="nav-text">SD 卡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CRC-%E5%90%AF%E7%94%A8"><span class="nav-number">3.19.2.</span> <span class="nav-text">CRC 启用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%8B%E9%92%AE"><span class="nav-number">3.20.</span> <span class="nav-text">旋钮</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E8%BE%A8%E7%8E%87"><span class="nav-number">3.20.1.</span> <span class="nav-text">分辨率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E5%90%91"><span class="nav-number">3.20.2.</span> <span class="nav-text">方向</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%9C%82%E9%B8%A3%E5%99%A8"><span class="nav-number">3.21.</span> <span class="nav-text">蜂鸣器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LCD-%E6%8E%A7%E5%88%B6%E9%9D%A2%E6%9D%BF"><span class="nav-number">3.22.</span> <span class="nav-text">LCD 控制面板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%9D%E5%A4%96%E5%8A%9F%E8%83%BD"><span class="nav-number">3.23.</span> <span class="nav-text">额外功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F-PWM-%E9%A3%8E%E6%89%87"><span class="nav-number">3.23.1.</span> <span class="nav-text">快速 PWM 风扇</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%BD%AF%E4%BB%B6-PWM-%E9%A9%B1%E5%8A%A8%E9%A3%8E%E6%89%87"><span class="nav-number">3.23.2.</span> <span class="nav-text">使用软件 PWM 驱动风扇</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%A9%E5%BA%A6%E7%8A%B6%E6%80%81%E6%8C%87%E7%A4%BA%E7%81%AF"><span class="nav-number">3.23.3.</span> <span class="nav-text">温度状态指示灯</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%97%A8%E5%BC%95%E8%84%9A"><span class="nav-number">3.23.4.</span> <span class="nav-text">快门引脚</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SkeinForge-%E5%9C%86%E5%BC%A7%E9%94%99%E8%AF%AF%E4%BF%AE%E5%A4%8D"><span class="nav-number">3.23.5.</span> <span class="nav-text">SkeinForge 圆弧错误修复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%8A%E7%8A%B6%E6%8C%A4%E5%87%BA"><span class="nav-number">3.23.6.</span> <span class="nav-text">糊状挤出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RGB-%E9%A2%9C%E8%89%B2-LED-%E5%8A%A0%E6%88%90-%E6%BB%91%E7%A8%BD"><span class="nav-number">3.23.7.</span> <span class="nav-text">RGB 颜色 LED 加成[滑稽]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Adafruit-Neopixel-LED-%E9%A9%B1%E5%8A%A8%E5%99%A8"><span class="nav-number">3.23.8.</span> <span class="nav-text">Adafruit Neopixel LED 驱动器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E6%89%93%E5%8D%B0%E6%9C%BA%E7%8A%B6%E6%80%81%E6%8E%A7%E5%88%B6-LED"><span class="nav-number">3.23.9.</span> <span class="nav-text">根据打印机状态控制 LED</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%88%B5%E6%9C%BA"><span class="nav-number">3.23.10.</span> <span class="nav-text">舵机</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Configuration-adv-h"><span class="nav-number">4.</span> <span class="nav-text">Configuration_adv.h</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="GeanRain"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">GeanRain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">GeanRain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
